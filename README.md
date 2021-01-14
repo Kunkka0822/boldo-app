@@ -1,0 +1,2 @@
+# boldo-app
+react native

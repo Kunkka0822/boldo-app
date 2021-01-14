@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>17294300561-5obb1e235r104v01l0iur3qtm26e1gj3.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.17294300561-5obb1e235r104v01l0iur3qtm26e1gj3</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>17294300561-7hsdmc8cc5c732ueb0rp0rre7rk1hv8f.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDsISxDyacR0ntxWyeAhQPC9SuKSk3N5kc</string>
+	<key>GCM_SENDER_ID</key>
+	<string>17294300561</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.tf.boldo</string>
+	<key>PROJECT_ID</key>
+	<string>boldo-892b3</string>
+	<key>STORAGE_BUCKET</key>
+	<string>boldo-892b3.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:17294300561:ios:5c7ff2b8b7da5848793630</string>
+	<key>DATABASE_URL</key>
+	<string>https://boldo-892b3.firebaseio.com</string>
+</dict>
+</plist>
