@@ -9,7 +9,7 @@ import { store } from "@store";
 import styles from "./styles";
 import { Searchbar } from 'react-native-paper';
 import IconBadge from 'react-native-icon-badge';
-import ImagePicker from 'react-native-image-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Toast from 'react-native-easy-toast'
 import Spinner from 'react-native-loading-spinner-overlay';
 import { EventRegister } from 'react-native-event-listeners'
@@ -104,7 +104,7 @@ export default class NewRecipe extends Component {
         path: 'images',
       },
     };
-    ImagePicker.launchCamera(options, (response) => {
+    launchCamera(options, (response) => {
       if (response.didCancel) {
       } else if (response.error) {
       } else if (response.customButton) {
@@ -124,7 +124,7 @@ export default class NewRecipe extends Component {
         path: 'images',
       },
     };
-    ImagePicker.launchImageLibrary(options, (response) => {
+    launchImageLibrary(options, (response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {

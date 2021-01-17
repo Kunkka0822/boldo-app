@@ -21,7 +21,7 @@ import { store, SetPrefrence, GetPrefrence } from "@store";
 import DropDownPicker from 'react-native-dropdown-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import style from "../../reducers/style";
-import ImagePicker from 'react-native-image-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
 
 export default class SignUp extends Component {
@@ -115,8 +115,7 @@ export default class SignUp extends Component {
         path: 'images',
       },
     };
-    console.log(ImagePicker);
-    ImagePicker.showImagePicker(options, (response) => {
+    launchImageLibrary(options, (response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {

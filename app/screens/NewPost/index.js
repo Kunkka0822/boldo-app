@@ -9,7 +9,7 @@ import { store } from "@store";
 import styles from "./styles";
 import { Searchbar } from 'react-native-paper';
 import IconBadge from 'react-native-icon-badge';
-import ImagePicker from 'react-native-image-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Toast from 'react-native-easy-toast'
 import Spinner from 'react-native-loading-spinner-overlay';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -28,6 +28,7 @@ export default class NewPost extends Component {
       height: 0,
     };
     this.ToastRef = null;
+    this.requirePermission();
   }
 
  
@@ -43,6 +44,24 @@ export default class NewPost extends Component {
 componentWillUnmount() {
     EventRegister.removeEventListener(this.listener)
 }
+
+async requirePermission() {
+  if (Platform.OS === 'android') {
+    try {
+      const granted = await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+      ])
+      if (granted['android.permission.CAMERA'] === PermissionsAndroid.RESULTS.GRANTED) {
+      } else {
+      }
+    } catch (err) {
+      console.log('PERMISSION ERROR', err)
+    }
+  }
+}
+
 
   onClose() {
     this.props.navigation.goBack();
@@ -65,7 +84,7 @@ componentWillUnmount() {
         path: 'images',
       },
     };
-    ImagePicker.launchCamera(options, (response) => {
+    launchCamera(options, (response) => {
       if (response.didCancel) {
       } else if (response.error) {
       } else if (response.customButton) {
@@ -80,12 +99,15 @@ componentWillUnmount() {
 
   onImage() {
     let options = {
+      title: Utils.translate("auth.select-image"), 
+      cameraType: 'front',
+      mediaType: 'photo' ,
       storageOptions: {
         skipBackup: true,
         path: 'images',
       },
     };
-    ImagePicker.launchImageLibrary(options, (response) => {
+    launchImageLibrary(options, (response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
@@ -97,8 +119,10 @@ componentWillUnmount() {
         this.setState({
           photo64: 'data:image/jpeg;base64,' + response.data
         });
+        console.log(response.data);
       }
     });
+   
   }
 
   onPost() {

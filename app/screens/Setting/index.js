@@ -13,7 +13,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import Dialog from "react-native-dialog";
 import { EventRegister } from 'react-native-event-listeners'
 const { width: screenWidth } = Dimensions.get('window')
-import ImagePicker from 'react-native-image-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Textarea from 'react-native-textarea';
 import { Picker } from '@react-native-picker/picker';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
@@ -142,7 +142,7 @@ class Setting extends Component {
             },
         };
 
-        ImagePicker.showImagePicker(options, (response) => {
+        launchImageLibrary(options, (response) => {
             if (response.didCancel) {
                 console.log('User cancelled image picker');
             } else if (response.error) {

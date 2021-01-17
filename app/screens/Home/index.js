@@ -12,7 +12,7 @@ import Carousel, { ParallaxImage } from 'react-native-snap-carousel';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Dialog from "react-native-dialog";
 import { EventRegister } from 'react-native-event-listeners'
-import ImagePicker from 'react-native-image-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Textarea from 'react-native-textarea';
 import { Picker } from '@react-native-picker/picker';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
