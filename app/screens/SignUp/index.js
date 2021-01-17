@@ -110,6 +110,7 @@ export default class SignUp extends Component {
       title: Utils.translate("auth.select-image"), 
       cameraType: 'front',
       mediaType: 'photo' ,
+      includeBase64:true,
       storageOptions: {
         skipBackup: true,
         path: 'images',
@@ -124,7 +125,7 @@ export default class SignUp extends Component {
         console.log('User tapped custom button: ', response.customButton);
         alert(response.customButton);
       } else {
-        let source = { uri: 'data:image/jpeg;base64,' + response.data };
+        let source = { uri: 'data:image/jpeg;base64,' + response.base64};
         this.setState({avatar:response, photo64:source.uri});
       }
     });

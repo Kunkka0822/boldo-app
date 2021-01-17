@@ -134,6 +134,7 @@ class Setting extends Component {
     choosePhoto() {
         let options = {
             title: Utils.translate("auth.select-image"),
+            includeBase64:true,
             cameraType: 'front',
             mediaType: 'photo',
             storageOptions: {
@@ -151,7 +152,7 @@ class Setting extends Component {
                 console.log('User tapped custom button: ', response.customButton);
                 alert(response.customButton);
             } else {
-                let source = { uri: 'data:image/jpeg;base64,' + response.data };
+                let source = { uri: 'data:image/jpeg;base64,' + response.base64 };
                 this.setUser('photo', source.uri);
             }
         });

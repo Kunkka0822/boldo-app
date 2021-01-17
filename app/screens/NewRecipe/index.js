@@ -99,6 +99,7 @@ export default class NewRecipe extends Component {
 
   onCamera() {
     let options = {
+      includeBase64:true,
       storageOptions: {
         skipBackup: true,
         path: 'images',
@@ -111,7 +112,7 @@ export default class NewRecipe extends Component {
       } else {
         console.log("camera");
         this.setState({
-          photo64: 'data:image/jpeg;base64,' + response.data
+          photo64: 'data:image/jpeg;base64,' + response.base64
         });
       }
     });
@@ -119,6 +120,7 @@ export default class NewRecipe extends Component {
 
   onImage() {
     let options = {
+      includeBase64:true,
       storageOptions: {
         skipBackup: true,
         path: 'images',
@@ -134,7 +136,7 @@ export default class NewRecipe extends Component {
         alert(response.customButton);
       } else {
         this.setState({
-          photo64: 'data:image/jpeg;base64,' + response.data
+          photo64: 'data:image/jpeg;base64,' + response.base64
         });
       }
     });

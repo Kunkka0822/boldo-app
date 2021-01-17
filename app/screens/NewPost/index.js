@@ -79,6 +79,7 @@ async requirePermission() {
 
   onCamera() {
     let options = {
+      includeBase64:true,
       storageOptions: {
         skipBackup: true,
         path: 'images',
@@ -91,7 +92,7 @@ async requirePermission() {
       } else {
         console.log("camera");
         this.setState({
-          photo64: 'data:image/jpeg;base64,' + response.data
+          photo64: 'data:image/jpeg;base64,' + response.base64
         });
       }
     });
@@ -102,6 +103,7 @@ async requirePermission() {
       title: Utils.translate("auth.select-image"), 
       cameraType: 'front',
       mediaType: 'photo' ,
+      includeBase64:true,
       storageOptions: {
         skipBackup: true,
         path: 'images',
@@ -117,9 +119,9 @@ async requirePermission() {
         alert(response.customButton);
       } else {
         this.setState({
-          photo64: 'data:image/jpeg;base64,' + response.data
+          photo64: 'data:image/jpeg;base64,' + response.base64
         });
-        console.log(response.data);
+        console.log(response);
       }
     });
    
