@@ -584,7 +584,7 @@ export default class SignUp extends Component {
                   this.setState({location:data.description, geolocation:detail.geometry.location});
                 }}
                 query={{
-                  key: 'AIzaSyDMrIaIY6QY_kiOz0VSZkN36HBd4cnfkH8',
+                  key: 'AIzaSyCjCZM8TG6uH8QnEYgEB31aTFzDKQhMF2k',
                   language: 'en',
                 }}
               />

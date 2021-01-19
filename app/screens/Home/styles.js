@@ -41,7 +41,14 @@ export default EStyleSheet.create({
     padding:10,
     width:'48%',
     alignItems: 'center',
-    borderRadius:5
+    borderRadius:5,
+},
+locationForm:{
+  width:"100%",
+  borderWidth:1,
+  borderRadius: 5,
+  borderStyle:'solid',
+  borderColor:'$inputBoderColor',
 },
 
 });

@@ -90,7 +90,6 @@ async requirePermission() {
       } else if (response.error) {
       } else if (response.customButton) {
       } else {
-        console.log("camera");
         this.setState({
           photo64: 'data:image/jpeg;base64,' + response.base64
         });
@@ -121,7 +120,6 @@ async requirePermission() {
         this.setState({
           photo64: 'data:image/jpeg;base64,' + response.base64
         });
-        console.log(response);
       }
     });
    

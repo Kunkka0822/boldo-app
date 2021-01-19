@@ -144,9 +144,9 @@ class Account extends Component {
                     <TouchableOpacity onPress={() => {this.setState({activePost:true})}}>
                         <Text title3 bold style={activePost?styles.activeTab:styles.deActiveTab}>  {Utils.translate("Account.posts")}  </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => {this.setState({activePost:false})}}>
+                    {/* <TouchableOpacity onPress={() => {this.setState({activePost:false})}}>
                         <Text title3 bold style={activePost?styles.deActiveTab:styles.activeTab}>  {Utils.translate("Account.connections")}  </Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
                 <View style={{borderTopWidth:2, borderColor:EStyleSheet.value('$accountBorderColor'), width:'100%', paddingTop:20}}>
                     { activePost &&
@@ -163,7 +163,7 @@ class Account extends Component {
                         }}
                         />
                     }
-                    { !activePost &&
+                    {/* { !activePost &&
                         <FlatList
                             data={filteredUsers}
                             keyExtractor={(item, index) => index.toString()}
@@ -180,7 +180,7 @@ class Account extends Component {
                             );
                         }}
                         />
-                    }
+                    } */}
                 </View>
             </SafeAreaView>
         )

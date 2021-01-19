@@ -99,13 +99,13 @@ class Loading extends Component {
       }
       apiActions.login(model)
         .then(response => {
-          if (response.data.user.device_token == null || response.data.user.device_token == "") {
+          // if (response.data.user.device_token == null || response.data.user.device_token == "") {
             this.getDeviceToken();
-          } else {
-            this.onNotificationListener();
-            this.onNotificationOpenedListener();
-            return this.props.navigation.navigate(store.getState().auth?.login?.data.user.role == 1 ? "Posts" : "Home");
-          }
+          // } else {
+          //   this.onNotificationListener();
+          //   this.onNotificationOpenedListener();
+          //   return this.props.navigation.navigate(store.getState().auth?.login?.data.user.role == 1 ? "Posts" : "Home");
+          // }
         })
         .catch(err => {
           return this.props.navigation.navigate("SingIn");
@@ -176,7 +176,7 @@ class Loading extends Component {
             )
         })
       } else {
-        return this.props.navigation.navigate("SingIn")
+        return RNRestart.Restart();
       }
 
     } else {

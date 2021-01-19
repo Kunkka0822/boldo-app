@@ -12,7 +12,7 @@ import Carousel, { ParallaxImage } from 'react-native-snap-carousel';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Dialog from "react-native-dialog";
 import { EventRegister } from 'react-native-event-listeners'
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import Textarea from 'react-native-textarea';
 import { Picker } from '@react-native-picker/picker';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
@@ -28,7 +28,8 @@ import RNRestart from 'react-native-restart';
 import MessageToast, { BaseToast } from 'react-native-toast-message';
 import Slider from '@react-native-community/slider';
 import GetLocation from 'react-native-get-location'
-import {getDistance, getPreciseDistance} from 'geolib';
+import { getDistance, getPreciseDistance } from 'geolib';
+import Modal from 'react-native-modal';
 
 const { width: screenWidth } = Dimensions.get('window')
 const items = store.getState().type.types;
@@ -66,8 +67,10 @@ class Home extends Component {
       styleOfCooking: [],
       chefs: [],
       location: "",
-      distance : 0,
-      current:{},
+      distance: 0,
+      current: {},
+      selectedUser: null,
+      showModal: false,
     };
     this.props.navigation.addListener('willFocus', this.getPros.bind(this));
     this.props.navigation.addListener('willFocus', this.getLocation.bind(this));
@@ -86,6 +89,7 @@ class Home extends Component {
       }
     })
     this.mounted = true;
+    this.getPros();
   }
 
   componentWillUnmount() {
@@ -120,19 +124,17 @@ class Home extends Component {
     }
   }
 
-  getLocation(){
+  getLocation() {
     GetLocation.getCurrentPosition({
       enableHighAccuracy: true,
       timeout: 15000,
     })
-    .then(location => {
-      console.log(location);
-
-      this.setState({current:location});
-    })
-    .catch(error => {
-      console.log('error---->', error);
-    })
+      .then(location => {
+        this.setState({ current: { lat: location.latitude, lng: location.longitude } });
+      })
+      .catch(error => {
+        console.log('error---->', error);
+      })
   }
 
   filterChefs() {
@@ -155,39 +157,38 @@ class Home extends Component {
         bFilter = true;
       }
 
-     if(bFilter == true){
-      if (stylesOfCooking.length > 0) {
-        bFilter = false;
-        let styles = chef.styleOfCooking;
-        bFilter = stylesOfCooking.some(elem => styles.indexOf(elem) > -1);
-      }
-
-      if(bFilter){
-        if (location != "") {
+      if (bFilter == true) {
+        if (stylesOfCooking.length > 0) {
           bFilter = false;
-          bFilter = chef.location.toLowerCase().includes(location.toLowerCase())
+          let styles = chef.styleOfCooking;
+          bFilter = stylesOfCooking.some(elem => styles.indexOf(elem) > -1);
+          const arrayFilterNameOfAll = style_items[0].children.filter(elem => elem.name == "All");
+          if (arrayFilterNameOfAll.length > 0) {
+            let idOfAll = arrayFilterNameOfAll[0].id;
+            bFilter = stylesOfCooking.includes(idOfAll)
+          }
         }
-      }
 
-      if(bFilter){
-        if(distance != 0){
-          bFilter = false;
-          let geoLocation = chef.geolocation;
-          let curLatitude = current.latitude
-          let curLongitude = current.longitude
-          let lat = geoLocation.lat
-          let lng = geoLocation.lng
-  
-          let start = {latitude:curLatitude, longitude:curLongitude}
-          let end = {latitude:lat, longitude:lng}
-          let distance2Pro = getDistance(start, end);
-          console.log(distance2Pro);
-          if(distance2Pro <= distance*1000){
-            bFilter = true;
+        if (bFilter) {
+          if (distance != 0) {
+            bFilter = false;
+            let geoLocation = chef.geolocation;
+            let curLatitude = current.lat
+            let curLongitude = current.lng
+            let lat = geoLocation.lat
+            let lng = geoLocation.lng
+
+            let start = { latitude: curLatitude, longitude: curLongitude }
+            let end = { latitude: lat, longitude: lng }
+            let distance2Pro = getDistance(start, end);
+            if (distance2Pro <= distance * 1000) {
+              bFilter = true;
+            }
+          } else {
+
           }
         }
       }
-     }
 
       if (bFilter == true) {
         filteredChefs.push(chef);
@@ -245,7 +246,7 @@ class Home extends Component {
     }
   }
 
-  onChat(item){
+  onChat(item) {
     let id = store.getState().auth?.login?.data.user.id;
     const model = {
       id: id,
@@ -269,13 +270,13 @@ class Home extends Component {
   }
 
   render() {
-    let { loading, styleOfCooking, typeOfProfessional, location, distance } = this.state;
+    let { loading, styleOfCooking, typeOfProfessional, location, distance, showModal, selectedUser} = this.state;
     return (
       <SafeAreaView
         style={[BaseStyle.safeAreaView, { backgroundColor: "#fff" }]}
         forceInset={{ top: "always" }}
       >
-        <ScrollView style={{ paddingHorizontal: 20, marginTop: 30 }} keyboardShouldPersistTaps='always'
+        <KeyboardAwareScrollView style={{ paddingHorizontal: 20, marginTop: 30 }} keyboardShouldPersistTaps='handled'
           refreshControl={
             <RefreshControl
               refreshing={loading}
@@ -336,31 +337,24 @@ class Home extends Component {
             </View>
           </>}
 
-          <Text title3 blackColor style={{ fontSize: 16, marginTop: 20 }} > {Utils.translate("Account.location")} </Text>
-          {/* <View style={{ marginTop: 10, borderWidth: 1, borderRadius: 5, borderStyle: 'solid', borderColor: '$inputBoderColor', }} >
+          <Text title3 blackColor style={{ fontSize: 16, marginTop: 20 }} > {"Your Location"} </Text>
+          <View style={styles.locationForm} >
             <GooglePlacesAutocomplete
-              placeholder={Utils.translate("Account.location-placeholder")}
-              onPress={(data, details = null) => {
-                this.setState({ location: data.description });
+              placeholder={"Your Location"}
+              fetchDetails={true}
+              onPress={(data, detail) => {
+                this.setState({ location: data.description, current: detail.geometry.location });
               }}
               query={{
-                key: 'AIzaSyDMrIaIY6QY_kiOz0VSZkN36HBd4cnfkH8',
+                key: 'AIzaSyCjCZM8TG6uH8QnEYgEB31aTFzDKQhMF2k',
                 language: 'en',
               }}
             />
-          </View> */}
-          <TextInput
-            style={[BaseStyle.textInput]}
-            onChangeText={location => this.setState({ location })}
-            placeholder={Utils.translate("Account.location-placeholder")}
-            multiline={false}
-            placeholderTextColor={EStyleSheet.value('$grayColor')}
-            value={location}
-            selectionColor={EStyleSheet.value('$primaryColor')}
-          />
-          <View style={{width: '100%'}}>
-            <View style={{flexDirection:"row"}}>
-              <Text title3 blackColor style={{ fontSize: 16, marginTop: 20, flex:1 }} >
+          </View>
+
+          <View style={{ width: '100%' }}>
+            <View style={{ flexDirection: "row" }}>
+              <Text title3 blackColor style={{ fontSize: 16, marginTop: 20, flex: 1 }} >
                 {"Maximum Distance"}
               </Text>
               <Text title3 blackColor style={{ fontSize: 16, marginTop: 20 }} >
@@ -368,11 +362,11 @@ class Home extends Component {
               </Text>
             </View>
             <Slider
-              style={{marginTop:10}}
+              style={{ marginTop: 10 }}
               minimumValue={0}
               maximumValue={100}
               step={1}
-              onValueChange={distance=>this.setState({distance})}
+              onValueChange={distance => this.setState({ distance })}
               minimumTrackTintColor={EStyleSheet.value('$primaryColor')}
               maximumTrackTintColor="#ddd"
             />
@@ -386,8 +380,12 @@ class Home extends Component {
               renderItem={({ item }) => {
                 return (
                   <View style={styles.chef} >
-                    <Image style={styles.chefAvatar} source={{ uri: item.photo }}></Image>
-                    <Text title3 blackColor styles={{ marginTop: 10 }}> {item.fname + " " + item.lname} </Text>
+                    <TouchableOpacity onPress={() => {
+                          this.setState({selectedUser:item, showModal:true});
+                      }}>
+                      <Image style={styles.chefAvatar} source={{ uri: item.photo }}></Image>
+                    </TouchableOpacity>
+                    <Text title3 blackColor style={{ marginTop: 10, textAlign: 'center' }}> {item.fname + " " + item.lname} </Text>
                     <Text caption1 blackColor> {item.typeOfProfessionalNames.join(" | ")} </Text>
                     <Text style={{ flex: 1, textAlign: 'center' }} caption1 blackColor> {item.location} </Text>
                     <Button style={{ height: 35, width: '100%', marginTop: 10, borderRadius: 8 }}
@@ -404,7 +402,21 @@ class Home extends Component {
             /> :
             <View style={{ alignItems: 'center', justifyContent: 'center' }}><Text title1 style={{ marginTop: 50, color: EStyleSheet.value('$blackColor') }}> There are no professionals</Text></View>
           }
-        </ScrollView>
+
+          <Modal isVisible={showModal}>
+            <View style={{ backgroundColor: EStyleSheet.value("$contentColor"), alignItems: 'center' }}>
+              <Image style={{ width: 80, height: 80, borderRadius: 80, marginTop: 40 }} source={{ uri: selectedUser ? selectedUser.photo : "" }}></Image>
+              <View style={{ alignItems: 'center' }}>
+                <Text title3 bold blackColor styles={{ marginTop: 10 }}> {selectedUser ? selectedUser.lname + " " + selectedUser.fname : ""} </Text>
+                <Text caption blackColor> {selectedUser ? selectedUser.typeOfProfessionalNames.join(" | ") : ""} </Text>
+                <Text caption blackColor style={{ textAlign: 'center', paddingHorizontal: 20 }}> {selectedUser ? selectedUser.bio : ""} </Text>
+                <Text caption blackColor style={{ textAlign: 'center', paddingHorizontal: 20 }}> {selectedUser ? selectedUser.location : ""} </Text>
+              </View>
+              <Button onPress={()=>{this.setState({showModal:false})}} style={{ height: 40, marginHorizontal: 80, marginBottom: 20, marginTop: 20 }} >
+                {Utils.translate('messages.close')}</Button>
+            </View>
+          </Modal>
+        </KeyboardAwareScrollView>
         <MessageToast config={toastConfig} ref={ref => this.MessageToastRef = ref} />
       </SafeAreaView>
     );

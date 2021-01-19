@@ -70,6 +70,7 @@ export default class PostList extends Component {
                 });
             }
         })
+        this.getPosts();
     }
 
     componentWillUnmount() {
@@ -104,7 +105,17 @@ export default class PostList extends Component {
     }
 
     updateSearch = (search) => {
-    
+        this.setState({search});
+        let filteredPost = this.state.filteredPost;
+        let posts = this.state.posts;
+        if(search == ""){
+            this.setState({filteredPost:posts});
+        }else{
+            filteredPost = posts.filter(post => post.content.toLowerCase().includes(search.toLowerCase()) || 
+                post.user.lname.toLowerCase().includes(search.toLowerCase()) ||
+                post.user.fname.toLowerCase().includes(search.toLowerCase()));
+            this.setState({filteredPost:filteredPost});
+        }
     };
 
     setVisible = () => {

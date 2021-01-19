@@ -81,13 +81,11 @@ class Address extends Component {
             const model = {
                 id: id,
             }
-
             this.setState({
                 loading: true
             }, () => {
                 apiActions.getContacts(model)
                     .then(response => {
-                        console.log(response.data);
                         this.setState({
                             contacts: response.data,
                             filteredContacts: response.data,
