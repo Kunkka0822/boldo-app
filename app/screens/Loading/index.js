@@ -153,10 +153,17 @@ class Loading extends Component {
   async getDeviceToken() {
     const token = await notifications.getToken();
     if (token != null && token != '') {
+      if(Platform.OS == 'ios'){
+        let permission = this.hasPermission();
+        console.log('permission', permission);
+        // if (!permission)
+          this.requestPermission();
+      }
       this.onNotificationListener();
       this.onNotificationOpenedListener();
       if (store.getState().auth?.login?.success) {
         let id = store.getState().auth?.login?.data.user.id;
+        
         const model = {
           id: id,
           token: token
