@@ -130,7 +130,7 @@ class Home extends Component {
       timeout: 15000,
     })
       .then(location => {
-        this.setState({ current: { lat: location.latitude, lng: location.longitude } });
+        this.setState({ current: { lat: location.latitude, lng: location.longitude }, location:"current"});
       })
       .catch(error => {
         console.log('error---->', error);
@@ -163,14 +163,14 @@ class Home extends Component {
           let styles = chef.styleOfCooking;
           bFilter = stylesOfCooking.some(elem => styles.indexOf(elem) > -1);
           const arrayFilterNameOfAll = style_items[0].children.filter(elem => elem.name == "All");
-          if (arrayFilterNameOfAll.length > 0) {
+          if (arrayFilterNameOfAll.length > 0 && !bFilter) {
             let idOfAll = arrayFilterNameOfAll[0].id;
             bFilter = stylesOfCooking.includes(idOfAll)
           }
         }
 
         if (bFilter) {
-          if (distance != 0) {
+          if (distance != 0 && location!="") {
             bFilter = false;
             let geoLocation = chef.geolocation;
             let curLatitude = current.lat
