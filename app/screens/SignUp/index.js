@@ -194,10 +194,6 @@ export default class SignUp extends Component {
       this.setState({ success: {  ...success, fname: false} });
       this.ToastRef.show(Utils.translate("Account.invalid-name"));
       return;
-    } else if(lname == ""){
-      this.setState({ success: {  ...success, lname: false} });
-      this.ToastRef.show(Utils.translate("Account.invalid-name"));
-      return;
     } else if (!Utils.EMAIL_VALIDATE.test(String(email).toLowerCase())) {
       this.setState({ success: {  ...success, email: false} });
       this.ToastRef.show(Utils.translate("Account.invalid-email"));

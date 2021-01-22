@@ -23,7 +23,7 @@
         "": "Me",
         "name":"Name",
         "name-placeholder":"John Doe",
-        "fname":"First Name",
+        "fname":"First Name/Company Name",
         "fname-placeholder":"John",
 
         "lname":"Last Name",
