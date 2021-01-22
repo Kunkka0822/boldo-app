@@ -86,6 +86,7 @@ class Address extends Component {
             }, () => {
                 apiActions.getContacts(model)
                     .then(response => {
+                        console.log(response.data);
                         this.setState({
                             contacts: response.data,
                             filteredContacts: response.data,

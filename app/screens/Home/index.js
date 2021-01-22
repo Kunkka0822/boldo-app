@@ -386,7 +386,7 @@ class Home extends Component {
                       <Image style={styles.chefAvatar} source={{ uri: item.photo }}></Image>
                     </TouchableOpacity>
                     <Text title3 blackColor style={{ marginTop: 10, textAlign: 'center' }}> {item.fname + " " + item.lname} </Text>
-                    <Text caption1 blackColor> {item.typeOfProfessionalNames.join(" | ")} </Text>
+                    <Text caption1 blackColor style={{textAlign: 'center' }}> {item.typeOfProfessionalNames.join(" | ")} </Text>
                     <Text style={{ flex: 1, textAlign: 'center' }} caption1 blackColor> {item.location} </Text>
                     <Button style={{ height: 35, width: '100%', marginTop: 10, borderRadius: 8 }}
                       onPress={() => {
