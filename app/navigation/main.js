@@ -16,10 +16,6 @@ import Connection from "@screens/Connection";
 import PostList from "@screens/PostList";
 import Pending from "@screens/Pending";
 import Recipes from "@screens/Recipes";
-
-import Onboard from "@screens/Onboard";
-import SignIn from "@screens/SignIn";
-import SignUp from "@screens/SignUp";
 import NewPost from "@screens/NewPost";
 import NewRecipe from "@screens/NewRecipe";
 import Account from "@screens/Account";
@@ -124,18 +120,6 @@ const routeConfigsPro = {
       }
     })
   },
-  // Connection: {
-  //   screen: Connection,
-  //   navigationOptions: ({ theme }) => ({
-  //     title: '',
-  //     ...getTabBarOptions(theme),
-  //     tabBarIcon: ({ focused, tintColor }) => {
-  //     if(focused)
-  //       return <Image source={Images.link_on} />
-  //     return <Image source={Images.link} />
-  //     }
-  //   })
-  // },
   Recipes: {
     screen: Recipes,
     navigationOptions: ({ theme }) => ({
@@ -200,15 +184,6 @@ const RootStack = createStackNavigator(
   {
     StackNavigator: {
       screen: StackNavigator
-    },
-    Onboard: {
-      screen: Onboard
-    },
-    SignIn: {
-      screen: SignIn
-    },
-    SignUp: {
-      screen: SignUp
     },
     NewPost: {
       screen: NewPost

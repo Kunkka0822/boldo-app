@@ -96,7 +96,6 @@ export default class SignUp extends Component {
         } else {
         }
       } catch (err) {
-        console.log('PERMISSION ERROR', err)
       }
     }
   }

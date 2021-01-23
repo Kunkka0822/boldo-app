@@ -4,10 +4,11 @@ export default EStyleSheet.create({
   contain: {
     alignItems: "center",
     paddingHorizontal: 30,
-    borderRadius: 8,
   },
+
   logo: {
     alignItems: "center",
+    marginVertical:40
   },
   
   signEmail: {
@@ -17,8 +18,7 @@ export default EStyleSheet.create({
 
   signPassword:{
     width:'100%',
-    marginTop:10,
     marginBottom:5,
+    marginTop:15
   }
-
 });

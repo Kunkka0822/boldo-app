@@ -10,22 +10,9 @@ export default class Index extends Component {
   }
   render() {
     const {
-      //props style
-      header,
-      title1,
-      title2,
-      title3,
-      headline,
-      body1,
-      body2,
-      callout,
-      subhead,
-      footnote,
-      caption1,
-      caption2,
-      overline,
-      msgdate,
-      // props font
+      common,
+      name,
+
       thin,
       ultraLight,
       light,
@@ -37,13 +24,6 @@ export default class Index extends Component {
       black,
       //custom color
       primaryColor,
-      textSecondaryColor,
-      grayColor,
-      dividerColor,
-      whiteColor,
-      fieldColor,
-      blackColor,
-      redColor,
       numberOfLines,
       //custom
       style
@@ -51,26 +31,11 @@ export default class Index extends Component {
     return (
       <Text
         style={EStyleSheet.flatten([
-          header && Typography.header,
-          title1 && Typography.title1,
-          title2 && Typography.title2,
-          title3 && Typography.title3,
-          headline && Typography.headline,
-          body1 && Typography.body1,
-          body2 && Typography.body2,
-          callout && Typography.callout,
-          subhead && Typography.subhead,
-          footnote && Typography.footnote,
-          caption1 && Typography.caption1,
-          caption2 && Typography.caption2,
-          overline && Typography.overline,
-          msgdate && Typography.msgdate,
-          //custom for font
+          //default size
+          common && Typography.common,
+          name && Typography.name,
           thin && EStyleSheet.flatten({ fontWeight: FontWeight.thin }),
-          ultraLight &&
-          EStyleSheet.flatten({
-            fontWeight: FontWeight.ultraLight
-          }),
+          ultraLight && EStyleSheet.flatten({ fontWeight: FontWeight.ultraLight }),
           light && EStyleSheet.flatten({ fontWeight: FontWeight.light }),
           regular && EStyleSheet.flatten({ fontWeight: FontWeight.regular }),
           medium && EStyleSheet.flatten({ fontWeight: FontWeight.medium }),
@@ -79,21 +44,9 @@ export default class Index extends Component {
           heavy && EStyleSheet.flatten({ fontWeight: FontWeight.heavy }),
           black && EStyleSheet.flatten({ fontWeight: FontWeight.black }),
           // default color
-          EStyleSheet.flatten({
-            color: EStyleSheet.value('$textPrimaryColor')
-          }),
+          EStyleSheet.flatten({  color: EStyleSheet.value('$textColor')}),
           //custom for color
           primaryColor && EStyleSheet.flatten({ color: EStyleSheet.value('$primaryColor') }),
-          textSecondaryColor &&
-          EStyleSheet.flatten({
-            color: EStyleSheet.value('$textSecondaryColor')
-          }),
-          grayColor && EStyleSheet.flatten({ color: EStyleSheet.value('$grayColor') }),
-          dividerColor && EStyleSheet.flatten({ color: EStyleSheet.value('$dividerColor') }),
-          whiteColor && EStyleSheet.flatten({ color: EStyleSheet.value('$whiteColor') }),
-          fieldColor && EStyleSheet.flatten({ color: EStyleSheet.value('$fieldColor') }),
-          blackColor && EStyleSheet.flatten({ color: EStyleSheet.value('$blackColor') }),
-          redColor && EStyleSheet.flatten({ color: EStyleSheet.value('$redColor') }),
           style && style
         ])}
         numberOfLines={numberOfLines}

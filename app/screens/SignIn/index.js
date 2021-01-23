@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { View, TextInput, Image, SafeAreaView, ScrollView, TouchableOpacity, Linking, Alert, BackHandler } from "react-native";
+import { View, TextInput, Image, SafeAreaView, ScrollView, TouchableOpacity, Linking, Alert} from "react-native";
 import { BaseStyle, Images, BaseConfig } from "@config";
 import * as Utils from "@utils";
 import styles from "./styles";
@@ -9,10 +9,8 @@ import { Text, Button } from "@components";
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Toast from 'react-native-easy-toast'
 import { apiActions, actionTypes } from "@actions";
-import { openComposer, openInbox  } from 'react-native-email-link'
 import CheckBox from '@react-native-community/checkbox';
 import RNRestart from 'react-native-restart'; 
-import { store, SetPrefrence, GetPrefrence } from "@store";
 
 const onLogin = data => {
   return {
@@ -76,7 +74,6 @@ class SignIn extends Component {
               } catch (err) {
               }
             }, 500);
-            // return this.props.navigation.navigate("Loading");
           })
           .catch(err =>{
             console.log(err);
@@ -91,28 +88,11 @@ class SignIn extends Component {
 
   componentDidMount(){
     this.mounted = true;
-    // BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
   }
 
   componentWillUnmount(){
     this.mounted = false;
-    // BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
   }
-
-  // onBackPress = () => {
-  //   Alert.alert(
-  //     'Confirm exit',
-  //     'Do you want to exit App?',
-  //     [
-  //       {text: 'CANCEL', style: 'cancel'},
-  //       {text: 'OK', onPress: () => {
-  //         BackHandler.exitApp()
-  //        }
-  //      }
-  //     ]
-  //  );
-  //   return true;
-  // }
 
   onSingUp(){
     return this.props.navigation.navigate("SignUp");
@@ -139,10 +119,10 @@ class SignIn extends Component {
       >
         <ScrollView >
           <View style={styles.logo}>
-            <Image resizeMode={"contain"} style={{ width: 300, height: 140 }} source={Images.logo} />
+            <Image resizeMode={"contain"} style={{ height:80}} source={Images.logo} />
           </View>
           <View style={styles.contain}>
-            <Text title3 blackColor style={styles.signEmail}> {Utils.translate("Account.email")} </Text>
+            <Text name style={styles.signEmail}> {Utils.translate("Account.email")} </Text>
             <TextInput
               style={[BaseStyle.textInput]}
               onChangeText={email => this.setState({ email })}
@@ -155,17 +135,18 @@ class SignIn extends Component {
                 });
               }}
               autoCorrect={false}
-              placeholder={Utils.translate("Account.email")}
+              placeholder={Utils.translate("Account.email-placeholder")}
               placeholderTextColor={
                 success.email
-                  ? EStyleSheet.value('$grayColor')
+                  ? EStyleSheet.value('$placeColor')
                   : EStyleSheet.value('$errorColor')
               }
               keyboardType={'email-address'}
               value={email}
               selectionColor={EStyleSheet.value('$primaryColor')}
             />
-            <Text title3 blackColor style={styles.signPassword}> {Utils.translate("Account.password")} </Text>
+
+            <Text name style={styles.signPassword}> {Utils.translate("Account.password")} </Text>
             <TextInput
               style={[BaseStyle.textInput]}
               onChangeText={password => this.setState({ password })}
@@ -177,12 +158,12 @@ class SignIn extends Component {
                   }
                 });
               }}
-              placeholder={Utils.translate("Account.password")}
+              placeholder={Utils.translate("Account.password-placeholder")}
               secureTextEntry={true}
               multiline={false}
               placeholderTextColor={
                 success.password
-                  ? EStyleSheet.value('$grayColor')
+                  ? EStyleSheet.value('$placeColor')
                   : EStyleSheet.value('$errorColor')
               }
               value={password}
@@ -190,9 +171,10 @@ class SignIn extends Component {
             />
             <View style={{alignItems:'flex-end', marginTop:10, width:'100%'}}>
               <TouchableOpacity onPress={() => {this.onForget();}}>
-                <Text> {Utils.translate("auth.forget-password")}</Text>
+                <Text common> {Utils.translate("auth.forget-password")}</Text>
               </TouchableOpacity>
             </View>
+
             <View style={{alignItems: "center", display:'flex', flexDirection: "column", justifyContent:'center'}}>
               <View style={{flexDirection: "row"}}>
                 <CheckBox
@@ -201,10 +183,10 @@ class SignIn extends Component {
                   style={{alignSelf: "center",}}
                   tintColors={{true:EStyleSheet.value('$primaryColor'), false:EStyleSheet.value('$primaryColor')}}
                 />
-                <Text style={{margin:8, fontSize:15}}> {Utils.translate("auth.have-read")}</Text>
+                <Text common style={{margin:8}}> {Utils.translate("auth.have-read")}</Text>
               </View>
               <TouchableOpacity onPress={() => {this.onTerms();}}>
-                  <Text style={{color:EStyleSheet.value("$primaryColor"), textDecorationLine: 'underline', fontSize:15}}>{Utils.translate("auth.terms")}</Text>
+                  <Text primaryColor common style={{textDecorationLine: 'underline'}}>{Utils.translate("auth.terms")}</Text>
               </TouchableOpacity>
             </View>
             <View style={{ width: "100%", marginTop: 30}}>
@@ -235,7 +217,7 @@ class SignIn extends Component {
             <View style={{  flex: 1, 
                 alignItems: 'center',
                 justifyContent: 'center'}}>
-              <Text title3 blackColor> {Utils.translate("auth.support")} </Text>
+              <Text common blackColor> {Utils.translate("auth.support")} </Text>
             </View>
           </TouchableOpacity>
         </ScrollView>

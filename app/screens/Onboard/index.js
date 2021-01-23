@@ -1,13 +1,10 @@
-import { Image, View, Text, Platform, Alert, BackHandler } from 'react-native';
+import { Image, View, Platform} from 'react-native';
 import React, { useEffect } from 'react';
 import { Button } from 'react-native-elements';
 import Onboarding from '../../custom_module/react-native-onboarding-swiper-custom';
-// import Onboarding from 'react-native-onboarding-swiper';
-import { Images, BaseColor } from "@config";
+import { Images} from "@config";
 import styles from "./styles";
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { store, SetPrefrence, GetPrefrence } from "@store";
-const PREF_ONBOARD = 'onboard';
 
 const skip = (navigation) => {
   try {
@@ -53,9 +50,9 @@ const Done = ({ isLight, ...props }) => (
     }}
     titleStyle={{ color: EStyleSheet.value('$whiteColor') }}
     {...props}
-  // onPress={done.bind(this)}
   />
 );
+
 const Skip = ({ isLight, skipLabel, ...props }) => (
   <Button
     title={'Skip'}
@@ -68,6 +65,7 @@ const Skip = ({ isLight, skipLabel, ...props }) => (
   >
   </Button>
 );
+
 const Next = ({ isLight, ...props }) => (
   <Button
     title={'Next'}
@@ -83,51 +81,33 @@ const Next = ({ isLight, ...props }) => (
     {...props}
   />
 );
+
 const Onboard = ({ navigation }) => {
-
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener("hardwareBackPress", onBackPress);
-    return () => backHandler.removeEventListener("hardwareBackPress", onBackPress);
-    },[])
-
-
-  onBackPress = () => {
-    return true;
-  }
   return <Onboarding
     DotComponent={Square}
     NextButtonComponent={Next}
     SkipButtonComponent={Skip}
     DoneButtonComponent={Done}
-    bottomBarHeight={140}
+    bottomBarHeight={150}
     onDone={() => done(navigation)}
     onSkip={() => skip(navigation)}
-    titleStyles={{ color: 'blue' }} // set default color for the title
     pages={[
       {
-        backgroundColor: EStyleSheet.value('$whiteColor'),
-        image: <Image source={Images.onboading1} />,
+        backgroundColor: EStyleSheet.value('$contentColor'),
+        image: <Image source={Images.onboading1} style={{height:200, resizeMode:'contain'}}/>,
         title: 'Hospitality Services On Demand',
-        subtitle: `Choose from a wide selection of hospitality professionals. You connect with and deal directly with the professionals themselves.`,
-        titleStyles: { color: EStyleSheet.value('$blackColor'), fontWeight: 'bold', fontSize: 18 },
-        subTitleStyles: { fontSize: 15 }
+        subtitle: `Choose from a wide selection of hospitality professionals.\nYou connect with and deal directly with the professionals themselves.`,
+        titleStyles: { color: EStyleSheet.value('$blackColor'), fontWeight: 'bold', fontSize: 20 },
+        subTitleStyles: { fontSize: 17, color:EStyleSheet.value('$textColor')}
       },
       {
-        backgroundColor: EStyleSheet.value('$whiteColor'),
-        image: <Image source={Images.onboading2_1} />,
+        backgroundColor: EStyleSheet.value('$contentColor'),
+        image: <Image source={Images.onboading2_1} style={{height:200, resizeMode:'contain'}} />,
         title: 'Leading Talent',
         subtitle: `Consumers can connect with local chefs, caterers, bartenders and other hospitality professionals who have signed up on Boldo for services they need.`,
-        titleStyles: { color: EStyleSheet.value('$blackColor'), fontWeight: 'bold', fontSize: 18 },
-        subTitleStyles: { fontSize: 15 }
-
+        titleStyles: { color: EStyleSheet.value('$blackColor'), fontWeight: 'bold', fontSize: 20 },
+        subTitleStyles: { fontSize: 17, color:EStyleSheet.value('$textColor')}
       },
-      // {
-      //   backgroundColor: EStyleSheet.value('$whiteColor'),
-      //   image: <Image source={Images.onboading3} />,
-      //   title: 'Fair And Transparent Rates',
-      //   subtitle: `For consumers, it is free to sign up for Boldo. For hospitality professionals, a reasonable monthly or yearly subscription fee will be applied to use Boldo.`,
-      //   titleStyles: { color: EStyleSheet.value('$blackColor'), fontWeight:'bold'},
-      // },
     ]}
   />
 };

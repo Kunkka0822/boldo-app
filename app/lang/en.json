@@ -21,37 +21,48 @@
     },
     "Account": {
         "": "Me",
-        "name":"Name",
-        "name-placeholder":"John Doe",
-        "fname":"First Name/Company Name",
-        "fname-placeholder":"John",
+        "fname":"FIRST NAME/COMPANY NAME",
+        "fname-placeholder":"First name/Company name",
 
-        "lname":"Last Name",
-        "lname-placeholder":"Doe",
+        "lname":"LAST NAME",
+        "lname-placeholder":"Last Name",
 
-        "email":"Email",
-        "email-placeholder":"Example@mail.com",
+        "email":"EMAIL",
+        "email-placeholder":"Email",
+
         "bio":"BIO",
         "bio-placeholder":"Hey I’m professional...",
-        "references":"References",
+
+        "references":"REFERENCES",
         "references-placeholder":"Mr. Jhon",
-        "style-of-cooking":"Style of Cooking",
-        "style-of-cooking-placeholder":"Cuisine",
-        "liquor-serving-certification":"Liquor Serving Certification",
+
+       
+        "liquor-serving-certification":"LIQUOR SERVING CERTIFICATION",
         "liquor-serving-certification-placeholder":"Yes / No",
-        "work-history":"Work History",
+        
+        "work-history":"WORK HISTORY",
         "company-placeholder":"Company",
         "title-placeholder":"Title",
         "years-placeholder":"Years",
-        // "location":"Location",
-        "location":"City, Province",
+
+        "typeOfProfessional":"TYPES OF PROFESSIONAL",
+        "type-of-professional-holder":"Types of Professional",
+
+        "style-of-cooking":"STYLES OF COOKING",
+        "style-of-cooking-placeholder":"Cuisine",
+        
+        "location":"CITY, PROVINCE",
         "location-placeholder":"City, Province",
-        "postal-code":"Postal Code",
+        "postal-code":"POSTAL CODE",
         "postal-code-placeholder":"Postal Code",
-        "typeOfProfessional":"Type of Professional",
-        "type-of-professional-holder":"Type of Professional",
-        "password":"Password",
-        "c-password":"Confirm Password",
+        
+
+        "password":"PASSWORD",
+        "password-placeholder":"Password",
+
+        "c-password":"CONFIRM PASSWORD",
+        "c-password-placeholder":"Confirm Password",
+
         "invalid-name":"Please insert your name.",
         "invalid-email":"Please insert your valid email.",
         "invalid-bio":"Please insert your bio.",

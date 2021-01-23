@@ -12,9 +12,8 @@ export default EStyleSheet.create({
     paddingHorizontal: 20
   },
   textDefault: {
-    ...Typography.headline,
+    ...Typography.button,
     color: '$whiteColor',
-    fontWeight: FontWeight.semibold
   },
   outline: {
     backgroundColor: '$transparent',

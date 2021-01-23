@@ -1,20 +1,24 @@
 let BaseColor = {
   
-  '$primaryColor': "#006AFF",
-  '$whiteColor': "#fff",
+  '$primaryColor': "#006AFF", 
+  '$whiteColor': "#fff", 
   '$blackColor': "#000",
+  '$redColor': "#F00",
+  '$blueColor': "#00F",
+  '$greenColor': "#0F0",
+  '$grayColor': "#636363",
+  '$contentColor' : "#fff",
+  '$textColor' : '#202020',
+  '$placeColor': "#636563",
+  '$inputBoderColor' : "#E0E0E1",
+
   '$errorColor': "#ad0300",
   '$secondaryPrimaryColor': "#01BC63",
-  '$redColor': "#F00",
-
   '$tagColor': "#e8f2fe",
-  '$contentColor' : "#E5E5E5",
   '$pendingColor' : 'rgba(32, 130, 246, 0.1)',
   '$bottomColor' : '#F4F4F4',
-  
   '$textPrimaryColor': "#212121",
   '$textSecondaryColor': "#E0E0E1",
-  '$grayColor': "#636363",
   '$dividerColor': "#BDBDBD",
   '$fieldColor': "#F5F5F5",
   '$navyBlue': "#1d53c4",
@@ -31,17 +35,13 @@ let BaseColor = {
   '$success': "#4da6ff",
   '$danger': "#d93636",
   '$warning': "#ff9933",
-  
-
   '$setDarkMode': "#292929",
   '$setWallet': "#8A55FB",
   '$setStories': "#F62B50",
   '$setFriends': "#5CD138",
   '$setSpace': "#C3DFF5",
   '$setChannels': "#FBBF67",
-  '$inputBoderColor' : "#E0E0E0",
   '$accountBorderColor':'#F9F9F9'
-
 };
 export {
   BaseColor,

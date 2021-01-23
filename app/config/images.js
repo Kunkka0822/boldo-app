@@ -4,7 +4,7 @@
  */
 
 export const Images = {
-  logo: require("@assets/images/logo.png"),
+  logo: require("@assets/images/logo.png"), /// logo
   onboading1: require("@assets/images/onboading1.png"),
   onboading2_1: require("@assets/images/onboading2_1.png"),
   onboading2_2: require("@assets/images/onboading2_2.png"),
@@ -12,7 +12,6 @@ export const Images = {
   onboading3: require("@assets/images/onboading3.png"),
   camera: require("@assets/images/camera.png"),
   no_image: require("@assets/images/no_image.png"),
-
   home: require("@assets/images/home.png"),
   home_on: require("@assets/images/home_on.png"),
   clock: require("@assets/images/clock.png"),
@@ -23,7 +22,6 @@ export const Images = {
   hatchef_on: require("@assets/images/hat-chef_on.png"),
   chat: require("@assets/images/chat.png"),
   chat_on: require("@assets/images/chat_on.png"),
-
   bell: require("@assets/images/bell.png"),
   arrow: require("@assets/images/arrow.png"),
   close: require("@assets/images/close.png"),

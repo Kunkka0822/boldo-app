@@ -17,8 +17,9 @@ export const BaseStyle = EStyleSheet.create({
   },
   textInput: {
     height: 46,
-    color: '$blackColor',
+    color: '$textColor',
     padding: 8,
+    fontSize: 15,
     width: "100%",
     justifyContent: "center",
     borderRadius: 5,
@@ -31,6 +32,6 @@ export const BaseStyle = EStyleSheet.create({
   },
   safeAreaView: {
     flex: 1,
-    backgroundColor: '$lightField'
+    backgroundColor: '$contentColor'
   }
 });

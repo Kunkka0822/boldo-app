@@ -29,8 +29,8 @@ const _REQUEST2SERVER = (url, params = null) => {
   });
 }
 
-export const getFrontDatas = (params) => {
-  return _REQUEST2SERVER(`get_front_datas`, params);
+export const getTypeAndStyles = (params) => {
+  return _REQUEST2SERVER(`get_tyles_styles`, params);
 }
 export const registration = (params) => {
   return _REQUEST2SERVER(`register`, params);

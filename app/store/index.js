@@ -9,7 +9,7 @@ import rootReducer from "../reducers";
  * Redux Setting
  */
 const persistConfig = {
-  key: "root",
+  key: "boldo",
   storage: AsyncStorage,
   timeout: 100000
 };
@@ -22,23 +22,5 @@ if (process.env.NODE_ENV === `development`) {
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 const store = createStore(persistedReducer, applyMiddleware(...middleware));
 const persistor = persistStore(store);
-const SetPrefrence = async (key, value) => {
-  try {
-    await AsyncStorage.setItem(key, String(value));
-  } catch (error) {
-  }
-}
-const GetPrefrence = async (key, def) => {
-  try {
-    const value = await AsyncStorage.getItem(key);
 
-    if(!value) 
-      return def;
-    return value;
-  } catch (error) {
-    return def;
-  }
-}
-
-
-export { store, persistor, SetPrefrence, GetPrefrence };
+export { store, persistor};
