@@ -376,16 +376,34 @@ class Home extends Component {
           }
         </KeyboardAwareScrollView>
         <Modal isVisible={showModal}>
-          <View style={{ backgroundColor: EStyleSheet.value("$contentColor"), alignItems: 'center', borderRadius: 15 }}>
-            <Image style={{ width: 80, height: 80, borderRadius: 80, marginTop: 40 }} source={{ uri: selectedUser?.photo }}></Image>
-            <View style={{ alignItems: 'center' }}>
-              <Text styles={{ marginTop: 10 }}> {selectedUser?.lname + " " + selectedUser?.fname} </Text>
-              <Text> {selectedUser?.typeOfProfessionalNames?.length > 0 && selectedUser?.typeOfProfessionalNames.join(" | ")} </Text>
-              <Text style={{ textAlign: 'center', paddingHorizontal: 20 }}> {selectedUser?.bio} </Text>
-              <Text style={{ textAlign: 'center', paddingHorizontal: 20 }}> {selectedUser?.location} </Text>
-            </View>
-            <Button onPress={() => { this.setState({ showModal: false }) }} style={{ height: 40, marginHorizontal: 80, marginBottom: 20, marginTop: 20 }} >
-              {Utils.translate('messages.close')}</Button>
+          <View style={{ backgroundColor: EStyleSheet.value("$contentColor"), borderRadius: 15, height:'70%'}}>
+            <ScrollView >
+              <View style={{alignItems:'center'}}>
+              <Image style={{ width: 80, height: 80, borderRadius: 80, marginTop: 40 }} source={{ uri: selectedUser?.photo }}></Image>
+              <View style={{ alignItems: 'center' }}>
+                <Text styles={{ marginTop: 10 }}> {selectedUser?.lname + " " + selectedUser?.fname} </Text>
+                <Text> {selectedUser?.typeOfProfessionalNames?.length > 0 && selectedUser?.typeOfProfessionalNames.join(" | ")} </Text>
+                <Text style={{ textAlign: 'center', paddingHorizontal: 20 }}> {selectedUser?.bio} </Text>
+                <Text style={{ textAlign: 'center', paddingHorizontal: 20 }}> {selectedUser?.location} </Text>
+              </View>
+              <View style={{ alignItems: 'center', flex:1}}>
+                {
+                  selectedUser?.histories.map((item, index) => {
+                    return (<View>
+                      <Text style={{ textAlign: 'center', paddingHorizontal: 20, marginTop: 20, fontWeight: 'bold', fontSize: 16 }}>Working Histories</Text>
+                      <View style={{ borderWidth: 1, borderColor: EStyleSheet.value('$inputBoderColor') }}>
+                        <Text style={{ textAlign: 'center', paddingHorizontal: 20, fontSize: 14, color: EStyleSheet.value('$blackColor') }}>Company: {item.company}</Text>
+                        <Text style={{ textAlign: 'center', paddingHorizontal: 20, fontSize: 14, color: EStyleSheet.value('$blackColor') }}>Title: {item.title}</Text>
+                        <Text style={{ textAlign: 'center', paddingHorizontal: 20, fontSize: 14, color: EStyleSheet.value('$blackColor') }}>Years: {item.years}</Text>
+                      </View>
+                    </View>)
+                  })
+                }
+              </View>
+              <Button onPress={() => { this.setState({ showModal: false }) }} style={{ height: 40, marginHorizontal: 80, marginBottom: 20, marginTop: 20 }} >
+                {Utils.translate('messages.close')}</Button>
+              </View>
+            </ScrollView>
           </View>
         </Modal>
       </SafeAreaView>

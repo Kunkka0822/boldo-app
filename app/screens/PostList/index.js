@@ -106,6 +106,7 @@ class PostList extends Component {
                         posts: response.data,
                         filteredPosts: response.data
                     })
+                    console.log(response.data);
                 })
                 .catch(err => {
                     console.log(err);
