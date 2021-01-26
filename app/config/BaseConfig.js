@@ -1,5 +1,5 @@
-export const PROD_SERVER = false;
-export const debugging = true;
+export const PROD_SERVER = true;
+export const debugging = false;
 export const firebaseConfig = {
     apiKey: "",
     authDomain: "",
@@ -11,4 +11,4 @@ export const firebaseConfig = {
     measurementId: ""
 };
 
-export const SERVER_HOST = PROD_SERVER ? "http://54.163.177.131" : "http://192.168.109.73";
+export const SERVER_HOST = PROD_SERVER ?  "http://54.82.150.65" : "http://54.163.177.131";

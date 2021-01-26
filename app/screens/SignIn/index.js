@@ -121,7 +121,7 @@ class SignIn extends Component {
   }
 
   onTerms() {
-    Linking.openURL(`http://54.163.177.131/terms`)
+    Linking.openURL(`http://54.82.150.65/terms`)
   }
 
   render() {
