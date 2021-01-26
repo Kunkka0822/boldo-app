@@ -34,7 +34,7 @@ const toastConfig = {
   success: ({ text1 }) => (
     <View
       style={{
-        paddingHorizontal: 20, justifyContent: 'center', alignItems: 'center', marginTop: 80,
+        paddingHorizontal: 20, justifyContent: 'center', alignItems: 'center', marginTop: 180,
         height: 50, width: '80%', backgroundColor: EStyleSheet.value('$successColor'), borderRadius: 25
       }}>
       <Text style={{ textAlign: 'center', color: EStyleSheet.value('$blackColor'), fontSize: 16, fontWeight: 'bold', }}>{text1}</Text>
@@ -44,12 +44,22 @@ const toastConfig = {
     <View
       style={{
         paddingHorizontal: 20, justifyContent: 'center', alignItems: 'center',
-        height: 50, width: '80%', backgroundColor: EStyleSheet.value('$errorColor'), borderRadius: 25, marginTop: 80,
+        height: 50, width: '80%', backgroundColor: EStyleSheet.value('$errorColor'), borderRadius: 25, marginTop: 180,
       }}>
       <Text style={{ textAlign: 'center', color: EStyleSheet.value('$whiteColor'), fontSize: 16, fontWeight: 'bold' }}>{text1}</Text>
     </View>
   ),
-  info: () => { },
+  chat: ({ text1, text2 }) => (
+    <View
+      style={{
+        paddingHorizontal: 20, justifyContent: 'center', marginTop: 50,
+        height: 50, width: '80%', backgroundColor: EStyleSheet.value('$successColor'), borderRadius: 5,
+        flexDirection: 'column'
+      }}>
+      <Text style={{ color: EStyleSheet.value('$blackColor'), fontSize: 14, fontWeight: 'bold', }}>{text1}</Text>
+      <Text style={{ color: EStyleSheet.value('$blackColor'), fontSize: 12 }}>{text2}</Text>
+    </View>
+  ),
 };
 class Home extends Component {
   constructor(props) {
@@ -84,6 +94,10 @@ class Home extends Component {
     this.listener = EventRegister.addEventListener('notification', (data) => {
       let type = data._data.type;
       if (type == "new-message") {
+        let text = data._data.text;
+        let name = data._data.name;
+        Toast.show({ text1: name, text2:text, type: 'chat' },);
+        return;
 
       } else if (type == "new-pros") {
       }
@@ -233,7 +247,7 @@ class Home extends Component {
       apiActions.makeChatRoom(model)
         .then(response => {
           let room = response.data;
-          if(room.active == 0){
+          if (room.active == 0) {
             Toast.show({ text1: "You can't make this chat.", type: 'error' },);
             return;
           }
@@ -381,10 +395,10 @@ class Home extends Component {
           }
         </KeyboardAwareScrollView>
         <Modal isVisible={showModal}>
-          <View style={{ backgroundColor: EStyleSheet.value("$contentColor"), alignItems: 'center', borderRadius:15 }}>
+          <View style={{ backgroundColor: EStyleSheet.value("$contentColor"), alignItems: 'center', borderRadius: 15 }}>
             <Image style={{ width: 80, height: 80, borderRadius: 80, marginTop: 40 }} source={{ uri: selectedUser?.photo }}></Image>
             <View style={{ alignItems: 'center' }}>
-              <Text styles={{ marginTop: 10 }}> {selectedUser?.lname + " " + selectedUser?.fname } </Text>
+              <Text styles={{ marginTop: 10 }}> {selectedUser?.lname + " " + selectedUser?.fname} </Text>
               <Text> {selectedUser?.typeOfProfessionalNames?.length > 0 && selectedUser?.typeOfProfessionalNames.join(" | ")} </Text>
               <Text style={{ textAlign: 'center', paddingHorizontal: 20 }}> {selectedUser?.bio} </Text>
               <Text style={{ textAlign: 'center', paddingHorizontal: 20 }}> {selectedUser?.location} </Text>

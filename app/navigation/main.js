@@ -21,7 +21,7 @@ import Profile from "@screens/Profile";
 import Setting from "@screens/Setting";
 import NewPost from "@screens/NewPost";
 import NewRecipe from "@screens/NewRecipe";
-import BlackLists from "@screens/BlackLists";
+import BlockLists from "@screens/BlockLists";
 import Chat from "@screens/Chat";
 
 const Tab = createBottomTabNavigator();
@@ -84,7 +84,7 @@ export default function Navigation() {
           <Stack.Screen name="Setting" component={Setting} />
           <Stack.Screen name="NewPost" component={NewPost} />
           <Stack.Screen name="NewRecipe" component={NewRecipe} />
-          <Stack.Screen name="BlackLists" component={BlackLists} />
+          <Stack.Screen name="BlockLists" component={BlockLists} />
           <Stack.Screen name="Chat" component={Chat} />
         </Stack.Navigator>
       </NavigationContainer>

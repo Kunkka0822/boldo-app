@@ -39,7 +39,17 @@ const toastConfig = {
             <Text style={{ textAlign: 'center', color: EStyleSheet.value('$whiteColor'), fontSize: 16, fontWeight: 'bold' }}>{text1}</Text>
         </View>
     ),
-    info: () => { },
+    chat: ({ text1, text2 }) => (
+        <View
+          style={{
+            paddingHorizontal: 20, justifyContent: 'center', marginTop: 50,
+            height: 50, width: '80%', backgroundColor: EStyleSheet.value('$successColor'), borderRadius: 5,
+            flexDirection: 'column'
+          }}>
+          <Text style={{ color: EStyleSheet.value('$blackColor'), fontSize: 14, fontWeight: 'bold', }}>{text1}</Text>
+          <Text style={{ color: EStyleSheet.value('$blackColor'), fontSize: 12 }}>{text2}</Text>
+        </View>
+      ),
 };
 
 const onNotification = data => {
@@ -67,10 +77,11 @@ class Address extends Component {
         this.listener = EventRegister.addEventListener('notification', (data) => {
             let type = data._data.type;
             if (type == "new-message") {
-
-            } else if (type == "new-recipe") {
+                let text = data._data.text;
+                let name = data._data.name;
+                Toast.show({ text1: name, text2:text, type: 'chat' },);
                 this.getContacts();
-                this.manageBadge();
+            } else if (type == "new-recipe") {
             }
         })
         this.getContacts();
@@ -130,12 +141,12 @@ class Address extends Component {
     }
 
     onBlocks() {
-        return this.props.navigation.navigate("BlackLists");
+        return this.props.navigation.navigate("BlockLists");
     }
 
     onBlock(item, index) {
         const model = {
-            room_id: item.chatroom.id,
+            room_id: item.id,
             user_id: this.state.user.id,
         }
 
@@ -213,6 +224,7 @@ class Address extends Component {
                             <Text style={{ marginTop: 50, fontSize: 20, color: EStyleSheet.value('$textColor') }}> There are no contacts</Text>
                         </View>}
                 </ScrollView>
+                <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
             </SafeAreaView>
         )
     }

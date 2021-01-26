@@ -20,7 +20,7 @@ import Recipes from "@screens/Recipes";
 import Address from "@screens/Address";
 import Profile from "@screens/Profile";
 import Setting from "@screens/Setting";
-import BlackLists from "@screens/BlackLists";
+import BlockLists from "@screens/BlockLists";
 import Chat from "@screens/Chat";
 
 const Tab = createBottomTabNavigator();
@@ -86,7 +86,7 @@ export default function Navigation() {
           }}>
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
           <Stack.Screen name="Setting" component={Setting} />
-          <Stack.Screen name="BlackLists" component={BlackLists} />
+          <Stack.Screen name="BlockLists" component={BlockLists} />
           <Stack.Screen name="Chat" component={Chat} />
         </Stack.Navigator>
       </NavigationContainer>

@@ -100,42 +100,37 @@ export const removeBlock = (params) => {
   return _REQUEST2SERVER(`remove_block`, params);
 }
 
-
-
-
-export const sendConnect = (params) => {
-  return _REQUEST2SERVER(`send_connect`, params);
-}
-export const getPendings = (params) => {
-  return _REQUEST2SERVER(`get_pendings`, params);
-}
-
-export const removePending = (params) => {
-  return _REQUEST2SERVER(`remove_pending`, params);
-}
-export const updateToken = (params) => {
-  return _REQUEST2SERVER(`update_token`, params);
-}
-export const getBadge = (params) => {
-  return _REQUEST2SERVER(`get_badge`, params);
-}
-export const getConnections = (params) => {
-  return _REQUEST2SERVER(`get_connections`, params);
-}
-export const applyPending = (params) => {
-  return _REQUEST2SERVER(`apply_pending`, params);
-}
-
-export const getUserProfile = (params) => {
-  return _REQUEST2SERVER(`get_profile`, params);
-}
-
 export const sendReport = (params) => {
   return _REQUEST2SERVER(`send_report`, params);
 }
 
+export const updateToken = (params) => {
+  return _REQUEST2SERVER(`update_token`, params);
+}
 
 export const sendMessage = (params) => {
   return _REQUEST2SERVER(`send_message`, params);
+}
+
+export const getMessage = (params) => {
+  return _REQUEST2SERVER(`get_message`, params);
+}
+
+export const deleteMessage = (params) => {
+  return _REQUEST2SERVER(`delete_message`, params);
+}
+
+export const getOneMessage = (params) => {
+  return _REQUEST2SERVER(`get_one_message`, params);
+}
+
+export const readAll = (params) => {
+  return _REQUEST2SERVER(`read_all_message`, params);
+}
+export const uploadChatImages = (params) => {
+  return _REQUEST2SERVER(`upload_chat_image`, params);
+}
+export const removePhoto = (params) => {
+  return _REQUEST2SERVER(`remove_photo`, params);
 }
 

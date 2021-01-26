@@ -145,7 +145,6 @@ class Loading extends Component {
       }else if(type == "new-post"){
         notificationDatas.posts ++;
       }else if(type == "new-recipe"){
-        console.log("here Received");
         notificationDatas.recipes ++;
       }else if(type == 'changed-type'){
         return RNRestart.Restart();

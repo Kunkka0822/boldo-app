@@ -13,9 +13,11 @@ import Carousel, { ParallaxImage } from 'react-native-snap-carousel';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Dialog from "react-native-dialog";
 import { EventRegister } from 'react-native-event-listeners'
+import Toast from 'react-native-toast-message';
+import Textarea from 'react-native-textarea';
+import { connect } from "react-redux";
 
-
-class BlackLists extends Component {
+class BlockLists extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -32,6 +34,7 @@ class BlackLists extends Component {
                 console.log("new message received");
             }
         })
+        this.getBlocks();
     }
 
     componentWillUnmount() {
@@ -47,10 +50,10 @@ class BlackLists extends Component {
         this.props.navigation.goBack();
     }
 
-    onRemove = (id, index) => {
+    onRemove = (item, index) => {
         const model = {
             user_id: this.state.user.id,
-            room_id : id
+            room_id : item.id
         }
         this.setState({
             loading: true
@@ -74,15 +77,15 @@ class BlackLists extends Component {
         const model = {
             user_id: this.state.user.id,
         }
-
         this.setState({
             loading: true
         }, () => {
             apiActions.getBlocks(model)
                 .then(response => {
-                    this.setState({ rooms: response.data });
+                    this.setState({rooms: response.data });
                 })
                 .catch(err => {
+                    console.log(err)
                 })
                 .finally(
                     () => this.setState({ loading: false })
@@ -95,17 +98,17 @@ class BlackLists extends Component {
     }
 
     render() {
-        let { loading, rooms } = this.state;
+        let { loading, rooms, user} = this.state;
         return (
             <SafeAreaView
                 style={[BaseStyle.safeAreaView, { paddingHorizontal: 10, paddingTop: 20 }]}
                 forceInset={{ top: "always" }}
             >
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom:10 }}>
                     <TouchableOpacity onPress={() => { this.onClose() }}>
                         <Image source={Images.back} style={{ width: 20, height: 20, resizeMode: 'cover' }} ></Image>
                     </TouchableOpacity>
-                    <Text style={{ fontSize: 16, flex: 1, textAlign: 'center' }} > {"Blocked User Lists"} </Text>
+                    <Text style={{ fontSize: 20, flex: 1, textAlign: 'center' }} > {"Blocked User Lists"} </Text>
                 </View>
                 <ScrollView refreshControl={
                     <RefreshControl
@@ -157,4 +160,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PostList);
+export default connect(mapStateToProps, mapDispatchToProps)(BlockLists);

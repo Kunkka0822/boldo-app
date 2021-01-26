@@ -36,7 +36,17 @@ const toastConfig = {
       <Text style={{ textAlign: 'center', color: EStyleSheet.value('$whiteColor'), fontSize: 16, fontWeight: 'bold' }}>{text1}</Text>
     </View>
   ),
-  info: () => { },
+  chat: ({ text1, text2 }) => (
+    <View
+      style={{
+        paddingHorizontal: 20, justifyContent: 'center', marginTop: 50,
+        height: 50, width: '80%', backgroundColor: EStyleSheet.value('$successColor'), borderRadius: 5,
+        flexDirection: 'column'
+      }}>
+      <Text style={{ color: EStyleSheet.value('$blackColor'), fontSize: 14, fontWeight: 'bold', }}>{text1}</Text>
+      <Text style={{ color: EStyleSheet.value('$blackColor'), fontSize: 12 }}>{text2}</Text>
+    </View>
+  ),
 };
 
 export default class SignUp extends Component {
