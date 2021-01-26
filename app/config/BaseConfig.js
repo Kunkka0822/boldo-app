@@ -1,5 +1,5 @@
 export const PROD_SERVER = false;
-export const debugging = false;
+export const debugging = true;
 export const firebaseConfig = {
     apiKey: "",
     authDomain: "",

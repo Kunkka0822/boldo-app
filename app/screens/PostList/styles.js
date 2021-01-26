@@ -7,11 +7,6 @@ export default EStyleSheet.create({
         height: 40,
         borderRadius: 40,
     },
-    bell:{
-        width: 40,
-        height: 40,
-        margin:6
-    },
 
     post:{
         flex:1, 
@@ -27,5 +22,22 @@ export default EStyleSheet.create({
         backgroundColor:'$whiteColor',
         padding:10,
         borderRadius:5
-    }
+    },
+
+    textareaContainer: {
+        height:150,
+        marginTop:20,
+        padding: 8,
+        width: "100%",
+        borderRadius: 5,
+        borderWidth:1,
+        borderStyle:'solid',
+        borderColor:'$inputBoderColor'
+      },
+      textarea: {
+        height:'100%',
+        textAlignVertical: 'top',  // hack android
+        fontSize: 15,
+        color: '$textColor',
+      }
 });

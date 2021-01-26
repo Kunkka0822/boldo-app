@@ -3,15 +3,15 @@ import * as Utils from "@utils";
 
 export default EStyleSheet.create({
     setting: {
-        width: 40,
-        height: 40,
-        borderRadius: 40,
+        width: 35,
+        height: 35,
+        marginLeft:10
     },
 
     avatar: {
-        width: 100,
-        height: 100,
-        borderRadius: 100,
+        width: 80,
+        height: 80,
+        borderRadius: 40,
     },
 
     activeTab:{

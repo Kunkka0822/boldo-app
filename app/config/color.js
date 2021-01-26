@@ -7,12 +7,15 @@ let BaseColor = {
   '$blueColor': "#00F",
   '$greenColor': "#0F0",
   '$grayColor': "#636363",
-  '$contentColor' : "#fff",
+  '$contentColor' : "#fefefe",
   '$textColor' : '#202020',
   '$placeColor': "#636563",
   '$inputBoderColor' : "#E0E0E1",
-
-  '$errorColor': "#ad0300",
+  '$successColor' : "#AFF4CC",
+  '$errorColor': "#EB5757",
+  '$scrollColor': "#E5E5E5",
+  '$accountBorderColor':'#F9F9F9',
+  
   '$secondaryPrimaryColor': "#01BC63",
   '$tagColor': "#e8f2fe",
   '$pendingColor' : 'rgba(32, 130, 246, 0.1)',
@@ -23,7 +26,6 @@ let BaseColor = {
   '$fieldColor': "#F5F5F5",
   '$navyBlue': "#1d53c4",
   '$kashmir': "#5D6D7E",
-  '$lightField': "#fff",
   '$light2Field': "#F1F4F9",
   '$light3Field': "#F1F4F9",
   '$msgInput':'#F1F4F9',
@@ -31,7 +33,7 @@ let BaseColor = {
   '$quote': "#51e843",
   '$activeColor': "#ccfbff",
   '$whiteOpacity': "#ffffffd8",
-  '$transparent': "transparent",
+  '$transparent': "#0000",
   '$success': "#4da6ff",
   '$danger': "#d93636",
   '$warning': "#ff9933",
@@ -41,7 +43,6 @@ let BaseColor = {
   '$setFriends': "#5CD138",
   '$setSpace': "#C3DFF5",
   '$setChannels': "#FBBF67",
-  '$accountBorderColor':'#F9F9F9'
 };
 export {
   BaseColor,

@@ -12,7 +12,6 @@ export default class Index extends Component {
     const {
       common,
       name,
-
       thin,
       ultraLight,
       light,
@@ -60,21 +59,9 @@ export default class Index extends Component {
 // Define typechecking
 Index.propTypes = {
   //define style
-  header: PropTypes.bool,
-  title1: PropTypes.bool,
-  title2: PropTypes.bool,
-  title3: PropTypes.bool,
-  headline: PropTypes.bool,
-  body1: PropTypes.bool,
-  body2: PropTypes.bool,
-  callout: PropTypes.bool,
-  subhead: PropTypes.bool,
-  footnote: PropTypes.bool,
-  caption1: PropTypes.bool,
-  caption2: PropTypes.bool,
-  overline: PropTypes.bool,
-  msgdate: PropTypes.bool,
-
+  name: PropTypes.bool,
+  common: PropTypes.bool,
+ 
   //define font custom
   thin: PropTypes.bool,
   ultraLight: PropTypes.bool,
@@ -87,12 +74,6 @@ Index.propTypes = {
   black: PropTypes.bool,
   //custon for text color
   primaryColor: PropTypes.bool,
-  textSecondaryColor: PropTypes.bool,
-  grayColor: PropTypes.bool,
-  dividerColor: PropTypes.bool,
-  whiteColor: PropTypes.bool,
-  fieldColor: PropTypes.bool,
-  //numberOfLines
   numberOfLines: PropTypes.number,
   //custom style
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
@@ -101,20 +82,9 @@ Index.propTypes = {
 
 Index.defaultProps = {
   //props for style
-  header: false,
-  title1: false,
-  title2: false,
-  title3: false,
-  headline: false,
-  body1: false,
-  body2: false,
-  callout: false,
-  subhead: false,
-  footnote: false,
-  caption1: false,
-  caption2: false,
-  overline: false,
-  msgdate: false,
+  name: false,
+  common: false,
+ 
   //props for font
   thin: false,
   ultraLight: false,
@@ -127,11 +97,6 @@ Index.defaultProps = {
   black: false,
   //custon for text color
   primaryColor: false,
-  textSecondaryColor: false,
-  grayColor: false,
-  dividerColor: false,
-  whiteColor: false,
-  fieldColor: false,
   //numberOfLines
   numberOfLines: 10,
   //custom style

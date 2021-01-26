@@ -40,17 +40,68 @@ export const login = (params) => {
   return _REQUEST2SERVER(`login`, params);
 }
 
-export const uploadPost = (params) => {
-  return _REQUEST2SERVER(`upload_post`, params);
+export const getUserPosts = (params) => {
+  return _REQUEST2SERVER(`get_user_posts`, params);
+}
+
+export const signOut = (params) => {
+  return _REQUEST2SERVER(`sign_out`, params);
+}
+
+export const updateProfile = (params) => {
+  return _REQUEST2SERVER(`update_profile`, params);
 }
 
 export const getPosts = (params) => {
   return _REQUEST2SERVER(`get_posts`, params);
 }
 
+export const uploadPost = (params) => {
+  return _REQUEST2SERVER(`upload_post`, params);
+}
+
+export const deletePost = (params) => {
+  return _REQUEST2SERVER(`delete_post`, params);
+}
+
+export const getRecipes = (params) => {
+  return _REQUEST2SERVER(`get_recipes`, params);
+}
+
+export const uploadRecipe = (params) => {
+  return _REQUEST2SERVER(`upload_recipe`, params);
+}
+
+export const viewRecipe = (params) => {
+  return _REQUEST2SERVER(`view_recipe`, params);
+}
+
+export const getContacts = (params) => {
+  return _REQUEST2SERVER(`get_contacts`, params);
+}
+
 export const getPros = (params) => {
   return _REQUEST2SERVER(`get_pros`, params);
 }
+
+export const makeChatRoom = (params) => {
+  return _REQUEST2SERVER(`make_chatroom`, params);
+}
+
+export const setBlock = (params) => {
+  return _REQUEST2SERVER(`set_block`, params);
+}
+
+export const getBlocks = (params) => {
+  return _REQUEST2SERVER(`get_blocks`, params);
+}
+
+export const removeBlock = (params) => {
+  return _REQUEST2SERVER(`remove_block`, params);
+}
+
+
+
 
 export const sendConnect = (params) => {
   return _REQUEST2SERVER(`send_connect`, params);
@@ -58,15 +109,7 @@ export const sendConnect = (params) => {
 export const getPendings = (params) => {
   return _REQUEST2SERVER(`get_pendings`, params);
 }
-export const uploadRecipe = (params) => {
-  return _REQUEST2SERVER(`upload_recipe`, params);
-}
-export const getRecipes = (params) => {
-  return _REQUEST2SERVER(`get_recipes`, params);
-}
-export const getUserInfo = (params) => {
-  return _REQUEST2SERVER(`get_user_info`, params);
-}
+
 export const removePending = (params) => {
   return _REQUEST2SERVER(`remove_pending`, params);
 }
@@ -82,36 +125,17 @@ export const getConnections = (params) => {
 export const applyPending = (params) => {
   return _REQUEST2SERVER(`apply_pending`, params);
 }
-export const viewRecipe = (params) => {
-  return _REQUEST2SERVER(`view_recipe`, params);
-}
+
 export const getUserProfile = (params) => {
   return _REQUEST2SERVER(`get_profile`, params);
 }
-export const updateProfile = (params) => {
-  return _REQUEST2SERVER(`update_profile`, params);
-}
+
 export const sendReport = (params) => {
   return _REQUEST2SERVER(`send_report`, params);
 }
-export const getContacts = (params) => {
-  return _REQUEST2SERVER(`get_contacts`, params);
-}
-export const makeChatRoom = (params) => {
-  return _REQUEST2SERVER(`make_chatroom`, params);
-}
-export const setBlock = (params) => {
-  return _REQUEST2SERVER(`set_block`, params);
-}
-export const getBlocks = (params) => {
-  return _REQUEST2SERVER(`get_blocks`, params);
-}
-export const removeBlock = (params) => {
-  return _REQUEST2SERVER(`remove_block`, params);
-}
+
+
 export const sendMessage = (params) => {
   return _REQUEST2SERVER(`send_message`, params);
 }
-export const signOut = (params) => {
-  return _REQUEST2SERVER(`sign_out`, params);
-}
+

@@ -22,13 +22,13 @@
     "Account": {
         "": "Me",
         "fname":"FIRST NAME/COMPANY NAME",
-        "fname-placeholder":"First name/Company name",
+        "fname-placeholder":"John",
 
         "lname":"LAST NAME",
-        "lname-placeholder":"Last Name",
+        "lname-placeholder":"Doe",
 
         "email":"EMAIL",
-        "email-placeholder":"Email",
+        "email-placeholder":"Example@mail.com",
 
         "bio":"BIO",
         "bio-placeholder":"Hey I’m professional...",
@@ -52,33 +52,32 @@
         "style-of-cooking-placeholder":"Cuisine",
         
         "location":"CITY, PROVINCE",
-        "location-placeholder":"City, Province",
+        "location-placeholder":"Toronto, ON, Canada",
         "postal-code":"POSTAL CODE",
-        "postal-code-placeholder":"Postal Code",
-        
+        "postal-code-placeholder":"M5H",
 
         "password":"PASSWORD",
-        "password-placeholder":"Password",
+        "password-placeholder":"******",
 
         "c-password":"CONFIRM PASSWORD",
-        "c-password-placeholder":"Confirm Password",
+        "c-password-placeholder":"Retype your password",
 
-        "invalid-name":"Please insert your name.",
+        "invalid-name":"Please insert your first name.",
         "invalid-email":"Please insert your valid email.",
         "invalid-bio":"Please insert your bio.",
         "invalid-references":"Please insert your references.",
-        "invalid-styleofcooking":"Please insert your style.",
-        "invalid-liquorservingcertification":"Please insert your liquor serving.",
+        "invalid-styleofcooking":"Please select your style of cooking.",
+        "invalid-liquorservingcertification":"Please select your liquor serving.",
         "invalid-histories":"Please insert your histories.",
         "invalid-company":"Please insert your company.",
         "invalid-title":"Please insert your title.",
         "invalid-years":"Please insert your years.",
         "invalid-location":"Please insert your location.",
         "invalid-postal-code":"Please insert your postal code.",
-        "invalid-typeofprofessional":"Please insert your type of professional.",
+        "invalid-typeofprofessional":"Please select your type of professional.",
         "invalid-password":"Please insert your password.",
         "invalid-cpassword":"Please confirm your password.",
-        "notsame-cpassword":"Confirm password is not same with password",
+        "notsame-cpassword":"Password confirm incorrect.",
         "invalid-photo":"Select your photo.",
         "invalid-content":"Input your conent.",
         "posts":"Posts",
@@ -98,8 +97,8 @@
         "register-failed":"Register failed",
         "register-failed-msg":"Please contact administrator on ",
         "register-exist-email-msg":"Email already exist.",
-
         "invalid-verify-code":"Invalid verification code",
+
         "close":"Close",
         "cancel":"Cancel",
         "report":"Report"

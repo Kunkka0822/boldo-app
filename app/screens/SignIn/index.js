@@ -7,10 +7,22 @@ import * as Utils from "@utils";
 import styles from "./styles";
 import { Text, Button } from "@components";
 import EStyleSheet from 'react-native-extended-stylesheet';
-import Toast from 'react-native-easy-toast'
 import { apiActions, actionTypes } from "@actions";
 import CheckBox from '@react-native-community/checkbox';
 import RNRestart from 'react-native-restart'; 
+import Toast from 'react-native-toast-message';
+
+const toastConfig = {
+  success: () => {},
+  error: ({text1}) => (
+    <View
+      style={{ paddingHorizontal: 20, justifyContent: 'center', alignItems:'center', 
+      height: 50, width: '80%', backgroundColor: EStyleSheet.value('$errorColor'), borderRadius: 25 }}>
+      <Text style={{textAlign:'center', color: EStyleSheet.value('$whiteColor'), fontSize:16, fontWeight:'bold' }}>{text1}</Text>
+    </View>
+  ),
+  info: () => { },
+};
 
 const onLogin = data => {
   return {
@@ -34,22 +46,22 @@ class SignIn extends Component {
       },
 
     };
-    this.ToastRef = null;
 
   }
    onLogin()  {
     const { navigation } = this.props;
     let {email, password, success, agree} = this.state;
     if(!agree){
-      this.ToastRef.show(Utils.translate("auth.invalid-agree"));
+      Toast.show({ text1: Utils.translate("auth.invalid-agree"), type: 'error'},);
       return;
     }else if(!Utils.EMAIL_VALIDATE.test(String(email).toLowerCase())) {
       this.setState({ success: {  ...success, email: false} });
-      this.ToastRef.show(Utils.translate("Account.invalid-email"));
+      Toast.show({ text1: Utils.translate("Account.invalid-email"), type: 'error'},);
+
       return;
     } else if(password == ""){
       this.setState({ success: {  ...success, email: false} });
-      this.ToastRef.show(Utils.translate("Account.invalid-password"));
+      Toast.show({ text1: Utils.translate("Account.invalid-password"), type: 'error'},);
       return;
     }
 
@@ -61,7 +73,6 @@ class SignIn extends Component {
           .then(response=>  {
             const data = {
               success: true,
-              onboarding: true,
               data: {},
             };
   
@@ -77,11 +88,11 @@ class SignIn extends Component {
           })
           .catch(err =>{
             console.log(err);
+            Toast.show({ text1: err.message, type: 'error'},);
           })
           .finally(
             () => this.setState({ loading: false })
           )
-  
       })
     }
   }
@@ -221,15 +232,7 @@ class SignIn extends Component {
             </View>
           </TouchableOpacity>
         </ScrollView>
-        <Toast
-          ref={ref => this.ToastRef = ref}
-          position='top'
-          fadeInDuration={750}
-          fadeOutDuration={1000}
-          opacity={0.8}
-          style={{ backgroundColor: EStyleSheet.value('$errorColor') }}
-          textStyle={{ color: EStyleSheet.value('$whiteColor'), fontWeight: "bold" }}
-        />
+        <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
       </SafeAreaView>
     );
   }

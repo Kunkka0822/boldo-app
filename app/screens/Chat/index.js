@@ -9,151 +9,83 @@ import { store } from "@store";
 import styles from "./styles";
 import { GiftedChat } from 'react-native-gifted-chat';
 import Spinner from 'react-native-loading-spinner-overlay';
-import Toast from 'react-native-easy-toast'
 import { EventRegister } from 'react-native-event-listeners'
 import MessageToast, { BaseToast } from 'react-native-toast-message';
-const toastConfig = {
-    success: ({ text1, text2, ...props }) => (
-        <BaseToast
-            {...props}
-            style={{ borderLeftColor: '#69C779' }}
-            contentContainerStyle={{ paddingHorizontal: 15 }}
-            text1Style={{
-                fontSize: 15,
-                fontWeight: 'bold'
-            }}
-            text2Style={{
-                fontSize: 15,
-                color: EStyleSheet.value('$blackColor')
-            }}
-            text1={text1}
-            text2={text2}
-        />
-    )
-};
-const role = store.getState().auth?.login?.data?.user?.role;
-const user = store.getState().auth?.login?.data?.user;
 
-export default class Chat extends Component {
+import { connect } from "react-redux";
+import Toast from 'react-native-toast-message';
+import Textarea from 'react-native-textarea';
+
+const onNotification = data => {
+    return {
+        type: actionTypes.PREF_NOTIFICATIONS,
+        data
+    };
+};
+
+const toastConfig = {
+    success: ({ text1 }) => (
+        <View
+            style={{
+                paddingHorizontal: 20, justifyContent: 'center', alignItems: 'center', marginTop: 80,
+                height: 50, width: '80%', backgroundColor: EStyleSheet.value('$successColor'), borderRadius: 25
+            }}>
+            <Text style={{ textAlign: 'center', color: EStyleSheet.value('$blackColor'), fontSize: 16, fontWeight: 'bold', }}>{text1}</Text>
+        </View>
+    ),
+    error: ({ text1 }) => (
+        <View
+            style={{
+                paddingHorizontal: 20, justifyContent: 'center', alignItems: 'center',
+                height: 50, width: '80%', backgroundColor: EStyleSheet.value('$errorColor'), borderRadius: 25, marginTop: 80,
+            }}>
+            <Text style={{ textAlign: 'center', color: EStyleSheet.value('$whiteColor'), fontSize: 16, fontWeight: 'bold' }}>{text1}</Text>
+        </View>
+    ),
+    info: () => { },
+};
+
+class Chat extends Component {
     constructor(props) {
         super(props);
         this.state = {
             loading: false,
-            messages: []
         };
-        this.room_info = props.navigation.state.params.item;
-        this.room = this.room_info.chatroom.room;
-        this.ToastRef = null;
-        this.MessageToastRef = null;
+        this.room = props.navigation.state.params.room;
     }
+
     componentWillMount() {
-
     }
-    componentDidMount() {
-        firebaseSvc.refOn(this.room, message => {
-            this.setState(previousState => ({
-                messages: GiftedChat.append(previousState.messages, message),
-            })
-            )
-        });
 
-        this.listener = EventRegister.addEventListener('notification', (data) => {
-            let type = data._data.type;
-            let from_room = data._data.room;
-            if (type == "new-message" && from_room != this.room) {
-                this.MessageToastRef.show({
-                    text1: data._title,
-                    text2: data._body,
-                    position: 'top',
-                    bottomOffset: 10,
-                });
-            }
-        })
+    componentDidMount() {
         
     }
+
     componentWillUnmount() {
-        firebaseSvc.refOff();
-        EventRegister.removeEventListener(this.listener)
     }
+
     onClose() {
-        this.props.navigation.goBack();
+       
     }
-    get user() {
-        return {
-            name: user?.fname + " " + user?.lname,
-            email: user?.email,
-            avatar: user?.photo,
-            id: user?.id,
-            _id: user?.id,
-        };
-    }
-    sendChat(msg) {
-        let bSend = false;
-        if (role == 1) {
-            if (this.room_info.chatroom.state1 == 1) {
-                bSend = true;
-            }
-        } else {
-            if (this.room_info.chatroom.state2 == 1) {
-                bSend = true;
-            }
-        }
-        if (bSend) {
-            let user_id = this.room_info.user.id;
-            const model = {
-                user_id: user_id,
-                id: user.id,
-                message: msg[0].text,
-                room: this.room
-            }
-
-            apiActions.sendMessage(model)
-                .then(response => {
-                    console.log("sent : ", response.success);
-                })
-                .catch(err => {
-                    console.log(err);
-                })
-
-            firebaseSvc.send(msg, this.room, false);
-        } else {
-            this.ToastRef.show("You can chat with this user. ");
-        }
-    }
+    
+  
     render() {
-        let { loading, messages } = this.state;
+        let {loading, messages} = this.state;
         return (
             <SafeAreaView
                 style={[BaseStyle.safeAreaView, { backgroundColor: EStyleSheet.value('$contentColor') }]}
                 forceInset={{ top: "always" }}
             >
-                <Spinner
-                    visible={this.state.loading}
-                    textContent={'loading...'}
-                    textStyle={{ color: EStyleSheet.value("$primaryColor") }}
-                />
-                <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: EStyleSheet.value("$primaryColor"), padding: 20 }}>
-                    <TouchableOpacity onPress={() => { this.onClose() }}>
-                        <Image source={Images.back} ></Image>
-                    </TouchableOpacity>
-                    <Text bold title3 style={{ color: EStyleSheet.value("$whiteColor"), marginLeft: 20 }}>Messages</Text>
-                </View>
-
-                <GiftedChat
-                    messages={messages}
-                    onSend={msg => this.sendChat(msg)}
-                    user={this.user}
-                />
-                <Toast
-                    ref={ref => this.ToastRef = ref}
-                    position='top'
-                    fadeInDuration={750}
-                    fadeOutDuration={1000}
-                    opacity={0.8}
-                    style={{ backgroundColor: EStyleSheet.value('$errorColor'), width: '80%', height: 50, justifyContent: 'center', alignItems: 'center' }}
-                    textStyle={{ color: EStyleSheet.value('$whiteColor'), fontWeight: "bold", fontSize: 20 }}
-                />
-                <MessageToast config={toastConfig} ref={ref => this.MessageToastRef = ref} />
+                
             </SafeAreaView>);
     }
 }
+
+const mapStateToProps = (state) => (state);
+const mapDispatchToProps = dispatch => {
+    return {
+        dispatch
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Chat);

@@ -16,101 +16,127 @@ import { EventRegister } from 'react-native-event-listeners'
 import { connect } from "react-redux";
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import MessageToast, { BaseToast } from 'react-native-toast-message';
+import Toast from 'react-native-toast-message';
+import Textarea from 'react-native-textarea';
+import { Badge } from 'react-native-paper';
+
 const toastConfig = {
-    success: ({ text1, text2, ...props }) => (
-        <BaseToast
-            {...props}
-            style={{ borderLeftColor: '#69C779'}}
-            contentContainerStyle={{ paddingHorizontal: 15}}
-            text1Style={{
-                fontSize: 15,
-                fontWeight: 'bold'
-            }}
-            text2Style={{
-                fontSize: 15,
-                color: EStyleSheet.value('$blackColor')
-            }}
-            text1={text1}
-            text2={text2}
-        />
-    )
+    success: ({ text1 }) => (
+        <View
+            style={{
+                paddingHorizontal: 20, justifyContent: 'center', alignItems: 'center', marginTop: 80,
+                height: 50, width: '80%', backgroundColor: EStyleSheet.value('$successColor'), borderRadius: 25
+            }}>
+            <Text style={{ textAlign: 'center', color: EStyleSheet.value('$blackColor'), fontSize: 16, fontWeight: 'bold', }}>{text1}</Text>
+        </View>
+    ),
+    error: ({ text1 }) => (
+        <View
+            style={{
+                paddingHorizontal: 20, justifyContent: 'center', alignItems: 'center',
+                height: 50, width: '80%', backgroundColor: EStyleSheet.value('$errorColor'), borderRadius: 25, marginTop: 80,
+            }}>
+            <Text style={{ textAlign: 'center', color: EStyleSheet.value('$whiteColor'), fontSize: 16, fontWeight: 'bold' }}>{text1}</Text>
+        </View>
+    ),
+    info: () => { },
 };
-const { width: screenWidth } = Dimensions.get('window')
-const role = store.getState().auth?.login?.data?.user?.role;
-const user = store.getState().auth?.login?.data?.user;
+
+const onNotification = data => {
+    return {
+        type: actionTypes.PREF_NOTIFICATIONS,
+        data
+    };
+};
 
 class Address extends Component {
     constructor(props) {
         super(props);
         this.state = {
             loading: false,
+            user: props.auth?.login?.data?.user,
             contacts: [],
             filteredContacts: [],
         };
 
-        this.props.navigation.addListener('willFocus', this.getContacts.bind(this));
-        this.MessageToastRef = null;
+        this.focusContacts = this.props.navigation.addListener('focus', this.getContacts.bind(this));
+        this.focusNotification = this.props.navigation.addListener('focus', this.manageBadge.bind(this));
     }
 
     componentDidMount() {
         this.listener = EventRegister.addEventListener('notification', (data) => {
             let type = data._data.type;
-
             if (type == "new-message") {
-                this.MessageToastRef.show({
-                    text1: data._title,
-                    text2: data._body,
-                    position: 'bottom',
-                    bottomOffset: 10,
-                });
+
+            } else if (type == "new-recipe") {
+                this.getContacts();
+                this.manageBadge();
             }
         })
+        this.getContacts();
     }
 
     componentWillUnmount() {
-        EventRegister.removeEventListener(this.listener)
-    }
+        try {
+            EventRegister.removeEventListener(this.listener)
+            this.focusContacts?.remove();
+            this.focusNotification?.remove();
+        } catch (error) {
 
-    onBlocks() {
-        return this.props.navigation.navigate("Blockeds");
-    }
-
-    getContacts() {
-        if (store.getState().auth?.login?.success) {
-            let id = user.id;
-            const model = {
-                id: id,
-            }
-            this.setState({
-                loading: true
-            }, () => {
-                apiActions.getContacts(model)
-                    .then(response => {
-                        console.log(response.data);
-                        this.setState({
-                            contacts: response.data,
-                            filteredContacts: response.data,
-                        })
-                    })
-                    .catch(err => {
-                        console.log('err');
-                        console.log(err);
-                    })
-                    .finally(
-                        () => this.setState({ loading: false })
-                    )
-            })
         }
     }
 
-    onChat = (item) =>{
-        return this.props.navigation.navigate("Chat", {item});
+    getContacts() {
+        let id = this.state.user.id;
+        const model = {
+            id: id,
+        }
+        this.setState({
+            loading: true
+        }, () => {
+            apiActions.getContacts(model)
+                .then(response => {
+                    this.setState({
+                        contacts: response.data,
+                        filteredContacts: response.data,
+                    })
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+                .finally(
+                    () => this.setState({ loading: false })
+                )
+        })
     }
 
-    onBlock(item, index){
+    manageBadge() {
+        let notificationDatas = this.props.notification.notifications;
+        if (notificationDatas == undefined) {
+            notificationDatas = {
+                chats: 0,
+                posts: 0,
+                recipes: 0,
+            }
+        }
+        if (notificationDatas.chats > 0) {
+            notificationDatas.chats = 0;
+            this.props.dispatch(onNotification(notificationDatas));
+        }
+    }
+
+    onChat(room) {
+        return this.props.navigation.navigate("Chat", { room });
+    }
+
+    onBlocks() {
+        return this.props.navigation.navigate("BlackLists");
+    }
+
+    onBlock(item, index) {
         const model = {
-            role: role,
-            id : item.chatroom.id
+            room_id: item.chatroom.id,
+            user_id: this.state.user.id,
         }
 
         this.setState({
@@ -136,56 +162,62 @@ class Address extends Component {
 
 
     render() {
-        let { loading, filteredContacts } = this.state;
+        let { loading, user, contacts, filteredContacts } = this.state;
         return (
             <SafeAreaView
                 style={[BaseStyle.safeAreaView, { paddingHorizontal: 10, paddingTop: 20 }]}
                 forceInset={{ top: "always" }}
             >
-                <Spinner
-                    visible={this.state.loading}
-                    textContent={'loading...'}
-                    textStyle={{color: EStyleSheet.value("$primaryColor")}}
-                />
-
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Text title3 blackColor style={{ fontSize: 16, flex:1, textAlign:'center'}} > {"Contacted User Lists"} </Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={{ fontSize: 20, flex: 1, textAlign: 'center', color: EStyleSheet.value('$textColor') }} > {"Chats"} </Text>
                     <TouchableOpacity onPress={() => { this.onBlocks() }}>
-                        <Image style={styles.setting} source={Images.setting} ></Image>
+                        <Icon name="lock" size={20} color={EStyleSheet.value("$primaryColor")}></Icon>
                     </TouchableOpacity>
                 </View>
-                <ScrollView style={{ width:'100%', paddingTop:10}}>
-                    {filteredContacts.length>0?<FlatList
-                        data={filteredContacts}
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={({item, index}) => {
-                        return (
-                            <TouchableOpacity
-                            onPress={this.onChat.bind(this, item)}
-                            style={{ 
-                                padding:8, display:'flex', 
-                                flexDirection:'row', alignItems:'center',
-                                borderRadius:5,
-                                borderWidth:2,
-                                marginTop:5,
-                                borderColor:EStyleSheet.value("$contentColor")
-                                
-                                }}>
-                                <Image style={{width:40, height:40, borderRadius:40}} source={{uri:item.user.photo}}></Image>
-                                <View style={{marginLeft:10, flex:1}}>
-                                    <Text title3 blackColor styles={{marginTop:10}}> {role == 1?item.user.fname: (item.user.fname+ " " + item.user.lname)} </Text>
-                                </View>
-                                <Button onPress={() => {this.onBlock(item, index)}} style={{backgroundColor:EStyleSheet.value('$pendingColor'), height:40}} 
-                                    styleText = {{color:EStyleSheet.value('$primaryColor'), fontWeight:'bold'}}>{"Block"}</Button>
-                            </TouchableOpacity>
-                        ); }} />
-                    :<View style={{ alignItems: 'center', justifyContent: 'center' }}><Text title1 style={{ marginTop: 50, color: EStyleSheet.value('$blackColor') }}> There are no contacts</Text></View>
-                }</ScrollView>
-                <MessageToast config={toastConfig} ref={ref => this.MessageToastRef = ref} />
+                <ScrollView style={{ width: '100%', paddingTop: 10 }}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={loading}
+                            onRefresh={this.getContacts.bind(this)}
+                        />
+                    }>
+                    {filteredContacts.length > 0 ?
+                        <FlatList
+                            data={filteredContacts}
+                            keyExtractor={(item, index) => index.toString()}
+                            renderItem={({ item, index }) => {
+                                return (
+                                    <TouchableOpacity
+                                        onPress={this.onChat.bind(this, item)}
+                                        style={{
+                                            padding: 8, display: 'flex',
+                                            flexDirection: 'row', alignItems: 'center',
+                                            borderRadius: 5,
+                                            borderWidth: 2,
+                                            marginTop: 5,
+                                            borderColor: EStyleSheet.value("$inputBoderColor"),
+                                            justifyContent: 'center'
+                                        }}>
+                                        <Image style={{ width: 40, height: 40, borderRadius: 40 }} source={{ uri: item?.user?.photo }}></Image>
+                                        <View style={{ marginLeft: 10, flex: 1, justifyContent: 'center', flexDirection: 'row' }}>
+                                            <Text style={{ fontWeight: 'bold', flex: 1 }}> {user?.role == 1 ? item?.user?.fname : (item?.user?.fname + " " + item?.user?.lname)} </Text>
+                                            {item.badge > 0 && <Badge style={{ marginRight: 30 }}>{item.badge}</Badge>}
+                                        </View>
+                                        <TouchableOpacity onPress={() => { this.onBlock(item, index) }} >
+                                            <Icon name="handshake-slash" size={20} color={EStyleSheet.value("$primaryColor")}></Icon>
+                                        </TouchableOpacity>
+                                    </TouchableOpacity>
+                                );
+                            }} />
+                        : <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                            <Text style={{ marginTop: 50, fontSize: 20, color: EStyleSheet.value('$textColor') }}> There are no contacts</Text>
+                        </View>}
+                </ScrollView>
             </SafeAreaView>
         )
     }
 }
+const mapStateToProps = (state) => (state);
 
 const mapDispatchToProps = dispatch => {
     return {
@@ -193,4 +225,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(null, mapDispatchToProps)(Address);
+export default connect(mapStateToProps, mapDispatchToProps)(Address);

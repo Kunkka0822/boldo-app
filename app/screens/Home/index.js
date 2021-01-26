@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { View, TextInput, SafeAreaView, ScrollView, TouchableOpacity, Image, FlatList, RefreshControl, Dimensions } from "react-native";
+import { View, TextInput, SafeAreaView, ScrollView, TouchableOpacity, Image, FlatList, RefreshControl, Dimensions, TouchableOpacityComponent } from "react-native";
 import { BaseStyle, Images, BaseConfig } from "@config";
 import { Button, Icon, Text } from "@components";
 import * as Utils from "@utils";
@@ -17,7 +17,6 @@ import Textarea from 'react-native-textarea';
 import { Picker } from '@react-native-picker/picker';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import Tags from "react-native-tags";
-import Toast from 'react-native-easy-toast'
 import { connect } from "react-redux";
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import IconMaterial from 'react-native-vector-icons/MaterialIcons'
@@ -25,102 +24,79 @@ import { store, SetPrefrence, GetPrefrence } from "@store";
 import DropDownPicker from 'react-native-dropdown-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import RNRestart from 'react-native-restart';
-import MessageToast, { BaseToast } from 'react-native-toast-message';
 import Slider from '@react-native-community/slider';
 import GetLocation from 'react-native-get-location'
 import { getDistance, getPreciseDistance } from 'geolib';
 import Modal from 'react-native-modal';
-
-const { width: screenWidth } = Dimensions.get('window')
-const items = store.getState().type.types;
-const style_items = store.getState().style.styles;
-const role = store.getState().auth?.login?.data?.user?.role;
-const user = store.getState().auth?.login?.data?.user;
+import Toast from 'react-native-toast-message';
 
 const toastConfig = {
-  success: ({ text1, text2, ...props }) => (
-    <BaseToast
-      {...props}
-      style={{ borderLeftColor: '#69C779' }}
-      contentContainerStyle={{ paddingHorizontal: 15 }}
-      text1Style={{
-        fontSize: 15,
-        fontWeight: 'bold'
-      }}
-      text2Style={{
-        fontSize: 15,
-        color: EStyleSheet.value('$blackColor')
-      }}
-      text1={text1}
-      text2={text2}
-    />
-  )
+  success: ({ text1 }) => (
+    <View
+      style={{
+        paddingHorizontal: 20, justifyContent: 'center', alignItems: 'center', marginTop: 80,
+        height: 50, width: '80%', backgroundColor: EStyleSheet.value('$successColor'), borderRadius: 25
+      }}>
+      <Text style={{ textAlign: 'center', color: EStyleSheet.value('$blackColor'), fontSize: 16, fontWeight: 'bold', }}>{text1}</Text>
+    </View>
+  ),
+  error: ({ text1 }) => (
+    <View
+      style={{
+        paddingHorizontal: 20, justifyContent: 'center', alignItems: 'center',
+        height: 50, width: '80%', backgroundColor: EStyleSheet.value('$errorColor'), borderRadius: 25, marginTop: 80,
+      }}>
+      <Text style={{ textAlign: 'center', color: EStyleSheet.value('$whiteColor'), fontSize: 16, fontWeight: 'bold' }}>{text1}</Text>
+    </View>
+  ),
+  info: () => { },
 };
-
-
 class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
       loading: false,
+      user: props.auth?.login?.data?.user,
+      type_items: [].concat(props.type?.types),
+      style_items: [].concat(props.style?.styles),
+
+      pros: [],
+      filteredPros: [],
+
       typeOfProfessional: [],
       styleOfCooking: [],
-      chefs: [],
       location: "",
       distance: 0,
       current: {},
       selectedUser: null,
       showModal: false,
     };
-    this.props.navigation.addListener('willFocus', this.getPros.bind(this));
-    this.props.navigation.addListener('willFocus', this.getLocation.bind(this));
-    this.MessageToastRef = null;
+    this.focusPros = this.props.navigation.addListener('focus', this.getPros.bind(this));
+    this.focuLocation = this.props.navigation.addListener('focus', this.getLocation.bind(this));
+
   }
 
   componentDidMount() {
+    let styles = this.state.style_items;
+    styles[0].children.push({ id: 100000, name: 'All' });
+    this.setState({ style_items: styles });
+    this.getPros();
     this.listener = EventRegister.addEventListener('notification', (data) => {
       let type = data._data.type;
-
       if (type == "new-message") {
-        this.MessageToastRef.show({
-          text1: data._title,
-          text2: data._body
-        });
+
+      } else if (type == "new-pros") {
       }
     })
-    this.mounted = true;
-    this.getPros();
   }
 
   componentWillUnmount() {
-    this.mounted = false;
-    EventRegister.removeEventListener(this.listener)
+    try {
+      EventRegister.removeEventListener(this.listener)
+      this.focusPros?.remove();
+      this.focuLocation?.remove();
+    } catch (error) {
 
-  }
-
-  getPros() {
-    if (store.getState().auth?.login?.success) {
-      let id = user.id;
-      const model = {
-        id: id,
-      }
-      this.setState({
-        loading: true
-      }, () => {
-        apiActions.getPros(model)
-          .then(response => {
-            this.setState({
-              chefs: response.data,
-            }, () => {
-            })
-          })
-          .catch(err => {
-            console.log('err---->', err);
-          })
-          .finally(
-            () => this.setState({ loading: false })
-          )
-      })
     }
   }
 
@@ -130,25 +106,71 @@ class Home extends Component {
       timeout: 15000,
     })
       .then(location => {
-        this.setState({ current: { lat: location.latitude, lng: location.longitude }, location:"current"});
+        this.setState({ current: { lat: location.latitude, lng: location.longitude }, location: "current" });
       })
       .catch(error => {
         console.log('error---->', error);
       })
   }
 
-  filterChefs() {
+  getPros() {
+    this.setState({
+      loading: true
+    }, () => {
+      apiActions.getPros()
+        .then(response => {
+          this.setState({
+            pros: response.data,
+            filteredPros: response.data,
+          }, () => {
+          })
+        })
+        .catch(err => {
+          console.log('err---->', err);
+        })
+        .finally(
+          () => this.setState({ loading: false })
+        )
+    })
+  }
+
+  hasPermission() {
+    let types = this.state.typeOfProfessional;
+    let styles = this.state.styleOfCooking;
+    let hasPermission = false;
+
+    types.forEach(id => {
+      const result = this.state.type_items[0].children.filter(item => item.id == id && item.style == 1);
+      if (result.length > 0) {
+        hasPermission = true;
+        return;
+      }
+    });
+
+    if (!hasPermission) {
+      if (styles.length > 0) {
+        styles = [];
+        this.setState({ styleOfCooking: styles });
+      }
+    }
+    return hasPermission;
+  }
+
+  filteredPros() {
     let typeOfProfessional = this.state.typeOfProfessional;
     let stylesOfCooking = this.state.styleOfCooking;
     let location = this.state.location;
     let distance = this.state.distance;
     let current = this.state.current;
     let i = 0;
-    let count = this.state.chefs.length;
-    let filteredChefs = [];
+    let count = this.state.pros.length;
+    let filteredPros = [];
+
+
+    let style_items = this.state.style_items;
 
     for (i = 0; i < count; i++) {
-      let chef = this.state.chefs[i];
+      let chef = this.state.pros[i];
       let bFilter = false;
       if (typeOfProfessional.length > 0) {
         let types = chef.typeOfProfessional;
@@ -170,7 +192,7 @@ class Home extends Component {
         }
 
         if (bFilter) {
-          if (distance != 0 && location!="") {
+          if (distance != 0 && location != "") {
             bFilter = false;
             let geoLocation = chef.geolocation;
             let curLatitude = current.lat
@@ -191,74 +213,31 @@ class Home extends Component {
       }
 
       if (bFilter == true) {
-        filteredChefs.push(chef);
+        filteredPros.push(chef);
       }
     }
 
-    return filteredChefs;
-  }
-
-  hasPermission() {
-    let types = this.state.typeOfProfessional;
-    let styles = this.state.styleOfCooking;
-    let hasPermission = false;
-    types.forEach(id => {
-      const result = items[0].children.filter(item => item.id == id && (item.name == "Chef" || item.name == "Caterer"));
-      if (result.length > 0) {
-        hasPermission = true;
-        return;
-      }
-    });
-
-    if (!hasPermission) {
-      if (styles.length > 0) {
-        styles = [];
-        this.setState({ styleOfCooking: styles });
-      }
-    }
-    return hasPermission;
-  }
-
-  gotoAccount() {
-    return this.props.navigation.navigate("Account");
-  }
-
-  onConnect(item) {
-    if (store.getState().auth?.login?.success) {
-      let id = store.getState().auth?.login?.data.user.id;
-      const model = {
-        id: id,
-        user_id: item.id
-      }
-      this.setState({
-        loading: true
-      }, () => {
-        apiActions.sendConnect(model)
-          .then(response => {
-            this.getPros();
-          })
-          .catch(err => {
-          })
-          .finally(
-            () => this.setState({ loading: false })
-          )
-      })
-    }
+    return filteredPros;
   }
 
   onChat(item) {
-    let id = store.getState().auth?.login?.data.user.id;
+    let id = this.state.user.id;
     const model = {
-      id: id,
-      oposit_id: item.id
+      user_id: id,
+      connect_id: item.id
     }
+
     this.setState({
       loading: true
     }, () => {
       apiActions.makeChatRoom(model)
         .then(response => {
-          let item = response.data;
-          return this.props.navigation.navigate("Chat", { item });
+          let room = response.data;
+          if(room.active == 0){
+            Toast.show({ text1: "You can't make this chat.", type: 'error' },);
+            return;
+          }
+          return this.props.navigation.navigate("Chat", { room });
         })
         .catch(err => {
           console.log(err);
@@ -270,22 +249,22 @@ class Home extends Component {
   }
 
   render() {
-    let { loading, styleOfCooking, typeOfProfessional, location, distance, showModal, selectedUser} = this.state;
+    let { loading, user, type_items, style_items, styleOfCooking, typeOfProfessional, distance, selectedUser, showModal } = this.state;
     return (
       <SafeAreaView
-        style={[BaseStyle.safeAreaView, { backgroundColor: "#fff" }]}
+        style={[BaseStyle.safeAreaView]}
         forceInset={{ top: "always" }}
       >
-        <KeyboardAwareScrollView style={{ paddingHorizontal: 20, marginTop: 30 }} keyboardShouldPersistTaps='handled'
+        <KeyboardAwareScrollView style={{ paddingHorizontal: 20, marginVertical: 45 }} keyboardShouldPersistTaps='handled'
           refreshControl={
             <RefreshControl
               refreshing={loading}
               onRefresh={this.getPros.bind(this)}
             />}>
-          <Text style={{ fontSize: 16 }}> {"What type of Professional are you looking for?"}</Text>
-          <View style={{ marginTop: 10, borderWidth: 1, borderRadius: 5, borderStyle: 'solid', borderColor: '$inputBoderColor', }}>
+          <Text style={{ fontSize: 16, textAlign: 'center' }}> {"What type of Professional are you looking for?"}</Text>
+          <View style={{ marginTop: 10, borderWidth: 1, borderRadius: 5, borderStyle: 'solid', borderColor: '$inputBoderColor' }}>
             <SectionedMultiSelect
-              items={items}
+              items={type_items}
               IconRenderer={IconMaterial}
               searchPlaceholderText=""
               uniqueKey="id"
@@ -336,8 +315,7 @@ class Home extends Component {
               />
             </View>
           </>}
-
-          <Text title3 blackColor style={{ fontSize: 16, marginTop: 20 }} > {"Your Location"} </Text>
+          <Text style={{ fontSize: 16, marginTop: 20, color: EStyleSheet.value('$textColor') }} > {"Your Location"} </Text>
           <View style={styles.locationForm} >
             <GooglePlacesAutocomplete
               placeholder={"Your Location"}
@@ -351,7 +329,6 @@ class Home extends Component {
               }}
             />
           </View>
-
           <View style={{ width: '100%' }}>
             <View style={{ flexDirection: "row" }}>
               <Text title3 blackColor style={{ fontSize: 16, marginTop: 20, flex: 1 }} >
@@ -371,24 +348,24 @@ class Home extends Component {
               maximumTrackTintColor="#ddd"
             />
           </View>
-          {this.filterChefs().length > 0 ?
+          {this.filteredPros().length > 0 ?
             <FlatList
               style={{ marginTop: 10 }}
-              data={this.filterChefs()}
+              data={this.filteredPros()}
               numColumns={2}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => {
                 return (
                   <View style={styles.chef} >
                     <TouchableOpacity onPress={() => {
-                          this.setState({selectedUser:item, showModal:true});
-                      }}>
+                      this.setState({ selectedUser: item, showModal: true });
+                    }}>
                       <Image style={styles.chefAvatar} source={{ uri: item.photo }}></Image>
                     </TouchableOpacity>
-                    <Text title3 blackColor style={{ marginTop: 10, textAlign: 'center' }}> {item.fname + " " + item.lname} </Text>
-                    <Text caption1 blackColor style={{textAlign: 'center' }}> {item.typeOfProfessionalNames.join(" | ")} </Text>
-                    <Text style={{ flex: 1, textAlign: 'center' }} caption1 blackColor> {item.location} </Text>
-                    <Button style={{ height: 35, width: '100%', marginTop: 10, borderRadius: 8 }}
+                    <Text style={{ marginTop: 10, textAlign: 'center', fontSize: 16, color: EStyleSheet.value('$textColor') }}> {item.fname + " " + item.lname} </Text>
+                    <Text style={{ textAlign: 'center', fontSize: 13, color: EStyleSheet.value('$textColor') }}> {item.typeOfProfessionalNames.join(" | ")} </Text>
+                    <Text style={{ flex: 1, textAlign: 'center', fontSize: 13, color: EStyleSheet.value('$textColor') }}> {item.location} </Text>
+                    <Button style={{ height: 40, width: '100%', marginTop: 10, borderRadius: 8 }}
                       onPress={() => {
                         if (!loading)
                           this.onChat(item);
@@ -400,33 +377,32 @@ class Home extends Component {
                 );
               }}
             /> :
-            <View style={{ alignItems: 'center', justifyContent: 'center' }}><Text title1 style={{ marginTop: 50, color: EStyleSheet.value('$blackColor') }}> There are no professionals</Text></View>
+            <View style={{ alignItems: 'center', justifyContent: 'center' }}><Text style={{ marginTop: 50, fontSize: 25, color: EStyleSheet.value('$blackColor') }}> There are no professionals</Text></View>
           }
-
-          <Modal isVisible={showModal}>
-            <View style={{ backgroundColor: EStyleSheet.value("$contentColor"), alignItems: 'center' }}>
-              <Image style={{ width: 80, height: 80, borderRadius: 80, marginTop: 40 }} source={{ uri: selectedUser ? selectedUser.photo : "" }}></Image>
-              <View style={{ alignItems: 'center' }}>
-                <Text title3 bold blackColor styles={{ marginTop: 10 }}> {selectedUser ? selectedUser.lname + " " + selectedUser.fname : ""} </Text>
-                <Text caption blackColor> {selectedUser ? selectedUser.typeOfProfessionalNames.join(" | ") : ""} </Text>
-                <Text caption blackColor style={{ textAlign: 'center', paddingHorizontal: 20 }}> {selectedUser ? selectedUser.bio : ""} </Text>
-                <Text caption blackColor style={{ textAlign: 'center', paddingHorizontal: 20 }}> {selectedUser ? selectedUser.location : ""} </Text>
-              </View>
-              <Button onPress={()=>{this.setState({showModal:false})}} style={{ height: 40, marginHorizontal: 80, marginBottom: 20, marginTop: 20 }} >
-                {Utils.translate('messages.close')}</Button>
-            </View>
-          </Modal>
         </KeyboardAwareScrollView>
-        <MessageToast config={toastConfig} ref={ref => this.MessageToastRef = ref} />
+        <Modal isVisible={showModal}>
+          <View style={{ backgroundColor: EStyleSheet.value("$contentColor"), alignItems: 'center', borderRadius:15 }}>
+            <Image style={{ width: 80, height: 80, borderRadius: 80, marginTop: 40 }} source={{ uri: selectedUser?.photo }}></Image>
+            <View style={{ alignItems: 'center' }}>
+              <Text styles={{ marginTop: 10 }}> {selectedUser?.lname + " " + selectedUser?.fname } </Text>
+              <Text> {selectedUser?.typeOfProfessionalNames?.length > 0 && selectedUser?.typeOfProfessionalNames.join(" | ")} </Text>
+              <Text style={{ textAlign: 'center', paddingHorizontal: 20 }}> {selectedUser?.bio} </Text>
+              <Text style={{ textAlign: 'center', paddingHorizontal: 20 }}> {selectedUser?.location} </Text>
+            </View>
+            <Button onPress={() => { this.setState({ showModal: false }) }} style={{ height: 40, marginHorizontal: 80, marginBottom: 20, marginTop: 20 }} >
+              {Utils.translate('messages.close')}</Button>
+          </View>
+        </Modal>
+        <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
       </SafeAreaView>
     );
   }
 }
-
+const mapStateToProps = (state) => (state);
 const mapDispatchToProps = dispatch => {
   return {
     dispatch
   };
 };
 
-export default connect(null, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

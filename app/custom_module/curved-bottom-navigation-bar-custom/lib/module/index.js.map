@@ -1,0 +1,1 @@
+{"version":3,"sources":["index.ts"],"names":[],"mappings":"+KAAA","sourcesContent":["export { AnimatedTabBar as default } from './AnimatedTabBar';\nexport type { TabsConfigsType } from './types';\n"]}

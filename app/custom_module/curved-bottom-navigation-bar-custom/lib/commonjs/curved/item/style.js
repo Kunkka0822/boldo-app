@@ -1,0 +1,2 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:true});exports.styles=void 0;var _reactNative=require("react-native");var styles=_reactNative.StyleSheet.create({buttonTab:{height:'100%',justifyContent:'center',alignItems:'center',backgroundColor:'transparent'},dot:{position:'absolute',backgroundColor:'#FFFFFF',justifyContent:'center',alignItems:'center'}});exports.styles=styles;
+//# sourceMappingURL=style.js.map

@@ -45,7 +45,7 @@ export default EStyleSheet.create({
     marginBottom:5,
   },
   textareaContainer: {
-    height: 80,
+    height:80,
     padding: 8,
     width: "100%",
     borderRadius: 5,
@@ -54,10 +54,10 @@ export default EStyleSheet.create({
     borderColor:'$inputBoderColor'
   },
   textarea: {
+    height:'100%',
     textAlignVertical: 'top',  // hack android
-    height: 170,
-    fontSize: 14,
-    color: '$blackColor',
+    fontSize: 15,
+    color: '$textColor',
   },
   dropDown:{
     width:"100%",

@@ -55,8 +55,10 @@ export default EStyleSheet.create({
 
     title:{
         position:'absolute',
+        paddingHorizontal:10,
         bottom:30,
-        left:30,
-        color:EStyleSheet.value('$whiteColor')
+        color:'$whiteColor',
+        fontSize:25, 
+        fontWeight:'bold'
     }
 });

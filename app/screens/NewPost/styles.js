@@ -3,31 +3,27 @@ import * as Utils from "@utils";
 
 export default EStyleSheet.create({
     arrow: {
-        width: 40,
-        height: 40,
+        width: 30,
+        height: 30,
+        resizeMode:'contain'
     },
     close: {
-        width: 15,
-        height: 15,
-    },
-    camera: {
         width: 20,
         height: 20,
+        resizeMode:'contain'
     },
-    gallery: {
-        width: 20,
-        height: 20,
-    },
+    
     post: {
-        height: 300,
-        resizeMode: 'contain',
-        width:'100%',
+        resizeMode: 'cover',
         flex:1,
-        padding:10
+        padding:10,
+        height:200,
+        width:'100%',
+        marginTop:10,
+        borderRadius: 5,
     },
     textareaContainer: {
-        width: "100%",
-        borderRadius: 15,
+        borderRadius: 5,
         borderWidth: 1,
         marginTop:10,
         borderStyle: 'solid',
@@ -40,5 +36,9 @@ export default EStyleSheet.create({
         color: '$blackColor',
         marginHorizontal: 10,
         height:'100%'
+    },
+
+    selection:{
+        backgroundColor : '$whiteColor'
     }
 });

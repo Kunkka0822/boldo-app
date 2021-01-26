@@ -8,14 +8,14 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 const skip = (navigation) => {
   try {
-    return navigation.navigate("SignIn");
-
+    return navigation.navigate("Auth");
   } catch (err) {
+    console.log('err', err)
   }
 }
 
 const done = (navigation) => {
-  return navigation.navigate("SignIn");
+  return navigation.navigate("Auth");
 }
 
 const Square = ({ isLight, selected }) => {

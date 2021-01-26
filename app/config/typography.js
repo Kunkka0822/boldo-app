@@ -20,16 +20,9 @@ export const Typography = EStyleSheet.create({
   common: {
     fontSize: 15,
     fontWeight: FontWeight.medium,
-    fontFamily: FontFamily.default
   },
   name: {
     fontSize: 15,
-    fontWeight: FontWeight.bold,
-    fontFamily: FontFamily.default
-  },
-  button: {
-    fontSize: 17,
-    fontWeight: FontWeight.bold,
-    fontFamily: FontFamily.default
+    fontWeight: FontWeight.medium,
   },
 });

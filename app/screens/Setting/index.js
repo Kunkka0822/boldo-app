@@ -1,36 +1,46 @@
-import React, { Component} from "react"
-import { View, TextInput, SafeAreaView, ScrollView, TouchableOpacity, Image, FlatList, RefreshControl, Dimensions } from "react-native";
-import { BaseStyle, Images, BaseConfig } from "@config";
-import { Button, Icon, Text } from "@components";
-import * as Utils from "@utils";
-import EStyleSheet from 'react-native-extended-stylesheet';
-import { apiActions, actionTypes } from "@actions";
-import styles from "./styles";
-import { Searchbar } from 'react-native-paper';
-import IconBadge from 'react-native-icon-badge';
-import Carousel, { ParallaxImage } from 'react-native-snap-carousel';
-import Spinner from 'react-native-loading-spinner-overlay';
-import Dialog from "react-native-dialog";
-import { EventRegister } from 'react-native-event-listeners'
-const { width: screenWidth } = Dimensions.get('window')
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import Textarea from 'react-native-textarea';
+import React, { Component } from "react";
+import {
+    Platform, PermissionsAndroid, View, TouchableOpacity,
+    TextInput, SafeAreaView, ScrollView, Image
+} from "react-native";
 import { Picker } from '@react-native-picker/picker';
+import { BaseStyle, BaseConfig, Images, } from "@config";
+import { Icon, Button, Text } from "@components";
+import styles from "./styles";
+import * as Utils from "@utils";
+import AlertPro from "react-native-alert-pro";
+import { apiActions, actionTypes } from "@actions";
+import EStyleSheet from 'react-native-extended-stylesheet';
+import { Appearance } from 'react-native-appearance'
+import Textarea from 'react-native-textarea';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import Tags from "react-native-tags";
-import Toast from 'react-native-easy-toast'
-import { connect } from "react-redux";
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import IconMaterial from 'react-native-vector-icons/MaterialIcons'
+import IconFeather from 'react-native-vector-icons/Feather';
 import { store, SetPrefrence, GetPrefrence } from "@store";
 import DropDownPicker from 'react-native-dropdown-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import RNRestart from 'react-native-restart'; 
+import style from "../../reducers/style";
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import Toast from 'react-native-toast-message';
+import RNRestart from 'react-native-restart';
+import { EventRegister } from 'react-native-event-listeners'
+import { connect } from "react-redux";
 
-const items = store.getState().type.types;
-const style_items = store.getState().style.styles;
-
-const role = store.getState().auth?.login?.data?.user?.role;
+const toastConfig = {
+    success: () => { },
+    error: ({ text1 }) => (
+        <View
+            style={{
+                paddingHorizontal: 20, justifyContent: 'center', alignItems: 'center',
+                height: 50, width: '80%', backgroundColor: EStyleSheet.value('$errorColor'), borderRadius: 25
+            }}>
+            <Text style={{ textAlign: 'center', color: EStyleSheet.value('$whiteColor'), fontSize: 16, fontWeight: 'bold' }}>{text1}</Text>
+        </View>
+    ),
+    info: () => { },
+};
 
 const onLogin = data => {
     return {
@@ -44,34 +54,36 @@ class Setting extends Component {
         super(props);
         this.state = {
             loading: false,
-            user: {},
+            user: { ...store.getState().auth?.login?.data?.user },
+            type_items: [].concat(store.getState().type.types),
+            style_items: [].concat(store.getState().style.styles),
         };
-        this.props.navigation.addListener('willFocus', this.getUserInfo.bind(this));
-        this.ToastRef = null;
-        this.LocationRef = null;
     }
 
     componentDidMount() {
         this.listener = EventRegister.addEventListener('notification', (data) => {
-            console.log('data', data);
-            if(data == "new-message"){
+            if (data == "new-message") {
                 console.log("new message received");
             }
         })
+
+        console.log("asdf", this.state.user);
     }
+
     componentWillUnmount() {
         EventRegister.removeEventListener(this.listener)
     }
+
     onClose() {
-        this.props.navigation.goBack();
+        return this.props.navigation.goBack();
     }
 
     onSignOut() {
-        let id = store.getState().auth?.login?.data.user.id;
-       
+        let id = this.state.user.id;
         const model = {
             id: id,
         }
+
         this.setState({
             loading: true
         }, () => {
@@ -79,17 +91,15 @@ class Setting extends Component {
                 .then(response => {
                     const data = {
                         success: false,
-                        onboarding: false,
                         data: {},
                     };
                     this.props.dispatch(onLogin(data))
-
                     setTimeout(() => {
                         try {
-                          return RNRestart.Restart();
+                            return RNRestart.Restart();
                         } catch (err) {
                         }
-                      }, 500);
+                    }, 500);
                 })
                 .catch(err => {
                     console.log('err');
@@ -98,43 +108,18 @@ class Setting extends Component {
                     () => this.setState({ loading: false })
                 )
         })
-        // return this.props.navigation.navigate("Loading");
     }
 
-    getUserInfo() {
-        if (store.getState().auth?.login?.success) {
-            let id = store.getState().auth?.login?.data.user.id;
-            const model = {
-                id: id,
-            }
-
-            this.setState({
-                loading: true
-            }, () => {
-                apiActions.getUserProfile(model)
-                    .then(response => {
-                        this.setState({
-                            user: response.data,
-                        }, ()=>{
-                            if(this.state.user?.role == 1)
-                                this.LocationRef?.setAddressText(this.state.user.location);
-                        })
-
-                    })
-                    .catch(err => {
-                        console.log('err');
-                    })
-                    .finally(
-                        () => this.setState({ loading: false })
-                    )
-            })
-        }
+    setUser = (key, value) => {
+        let user = this.state.user;
+        user[key] = value;
+        this.setState({ user: user });
     }
 
     choosePhoto() {
         let options = {
             title: Utils.translate("auth.select-image"),
-            includeBase64:true,
+            includeBase64: true,
             cameraType: 'front',
             mediaType: 'photo',
             storageOptions: {
@@ -158,90 +143,74 @@ class Setting extends Component {
         });
     }
 
-    setUser = (key, value) => {
-        let user = this.state.user;
-        user[key] = value;
+    hasPermission() {
+        let types = this.state.user.typeOfProfessional;
+        let styles = this.state.user.styleOfCooking;
+        let hasPermission = false;
+        let type_items = this.state.type_items;
 
-        this.setState({ user: user });
-    }
+        types.forEach(id => {
+            const result = type_items[0].children.filter(item => item.id == id && item.style == 1);
+            if (result.length > 0) {
+                hasPermission = true;
+                return;
+            }
+        });
 
-    moreHistory() {
-
-        let histories = this.state.user.histories;
-        let temp = { company: "", title: "", years: "", success: { company: true, title: true, years: true } }
-        histories.push(temp);
-        this.setUser('histories', histories);
-    }
-
-    minusHistory() {
-        let histories = this.state.user.histories;
-        histories.splice(histories.length - 1, 1);
-        this.setUser('histories', histories);
-    }
-
-    setHistory = (index, key, value) => {
-        let histories = this.state.user.histories;
-        let history = histories[index];
-        if (key.includes(".")) {
-            let keys = key.split(".");
-            history[keys[0]][keys[1]] = value;
-        } else {
-            history[key] = value;
+        if (!hasPermission) {
+            if (styles.length > 0) {
+                styles = [];
+                this.setUser('styleOfCooking', styles);
+            }
         }
-
-        histories[index] = history;
-        this.setUser('histories', histories);
+        return hasPermission;
     }
 
     onUpdateProfile() {
         const { navigation } = this.props;
         let { user } = this.state;
         if (user.fname == "") {
-            this.ToastRef.show(Utils.translate("Account.invalid-name"));
-            return;
-        } else if (user.lname == "") {
-            this.setState({ success: { ...success, lname: false } });
-            this.ToastRef.show(Utils.translate("Account.invalid-name"));
+            Toast.show({ text1: Utils.translate("Account.invalid-name"), type: 'error' });
             return;
         } else if (!Utils.EMAIL_VALIDATE.test(String(user.email).toLowerCase())) {
-            this.ToastRef.show(Utils.translate("Account.invalid-email"));
+            Toast.show({ text1: Utils.translate("Account.invalid-email"), type: 'error' });
             return;
-        } 
+        }
+
         if (user.role == 1) {
             if (user.bio == "") {
-                this.ToastRef.show(Utils.translate("Account.invalid-bio"));
+                Toast.show({text1: Utils.translate("Account.invalid-bio"), type:'error'});
                 return;
             } else if (user.references == "") {
-                this.ToastRef.show(Utils.translate("Account.invalid-references"));
+                Toast.show({text1: Utils.translate("Account.invalid-references"), type:'error'});
                 return;
             } else if (user.liquorServingCertification == "") {
-                this.ToastRef.show(Utils.translate("Account.invalid-liquorservingcertification"));
+                Toast.show({text1: Utils.translate("Account.invalid-liquorservingcertification"), type:'error'});
                 return;
             }  else if (user.typeOfProfessional.length == 0) {
-                this.ToastRef.show(Utils.translate("Account.invalid-typeofprofessional"));
+                Toast.show({text1: Utils.translate("Account.invalid-typeofprofessional"), type:'error'});
                 return;
             } else if (user.styleOfCooking.length == 0 && this.hasPermission()) {
-                this.setState({ success: {  ...success, styleOfCooking: false} });
-                this.ToastRef.show(Utils.translate("Account.invalid-styleofcooking"));
+                Toast.show({text1: Utils.translate("Account.invalid-styleofcooking"), type:'error'});
                 return;
             } else if (user.location == "") {
-                this.ToastRef.show(Utils.translate("Account.invalid-location"));
+                Toast.show({text1: Utils.translate("Account.invalid-location"), type:'error'});
                 return;
             } else if (user.histories.length == 0) {
-                this.ToastRef.show(Utils.translate("Account.invalid-histories"));
+                Toast.show({text1: Utils.translate("Account.invalid-histories"), type:'error'});
                 return;
             }
         }
         for (let i = 0; i < user.histories.length; i++) {
             let history = user.histories[i];
             if (history.company == "") {
-                this.ToastRef.show(Utils.translate("Account.invalid-company"));
+                Toast.show({text1: Utils.translate("Account.invalid-company"), type:'error'});
                 return;
             } else if (history.title == "") {
-                this.ToastRef.show(Utils.translate("Account.invalid-title"));
+                Toast.show({text1: Utils.translate("Account.invalid-title"), type:'error'});
                 return;
             } else if (history.years == "") {
-                this.ToastRef.show(Utils.translate("Account.invalid-years"));
+                Toast.show({text1: Utils.translate("Account.invalid-years"), type:'error'});
                 return;
             }
         }
@@ -263,46 +232,22 @@ class Setting extends Component {
         );
     }
 
-    hasPermission() {
-        let types = this.state.user.typeOfProfessional;
-        let styles = this.state.user.styleOfCooking;
-        let hasPermission = false;
-        types.forEach(id => {
-            const result = items[0].children.filter(item => item.id == id && (item.name == "Chef" || item.name == "Caterer"));
-            if (result.length > 0) {
-                hasPermission = true;
-                return;
-            }
-        });
-
-        if (!hasPermission) {
-            if (styles.length > 0) {
-                styles = [];
-                this.setUser('styleOfCooking', styles);
-            }
-        }
-        return hasPermission;
-    }
-
-
     render() {
-        let { loading, user } = this.state;
+        let { loading, user, type_items, style_items } = this.state;
         return (
             <SafeAreaView
-                style={[BaseStyle.safeAreaView, { backgroundColor: "#fff" }]}
+                style={[BaseStyle.safeAreaView, { paddingHorizontal: 10, }]}
                 forceInset={{ top: "always" }}
             >
-                <View style={{ flexDirection: "row", width: "100%", justifyContent: "center", alignItems: "center", marginTop: 30, paddingHorizontal: 20 }}>
-                    <View style={{ alignItems: 'center' }}>
-                        <TouchableOpacity onPress={() => { this.onClose() }}>
-                            <Image source={Images.back} ></Image>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{ flexDirection: 'row', flex: 1, alignItems: 'center', justifyContent: "center" }}>
-                        <TouchableOpacity onPress={() => this.setUser('role', true)}>
+                <View style={{ flexDirection: "row", width: "100%", justifyContent: "center", alignItems: "center", marginTop: 20, paddingHorizontal: 20 }}>
+                    <TouchableOpacity onPress={() => { this.onClose() }}>
+                        <Image source={Images.back} style={{ width: 20, height: 20, resizeMode: 'cover' }} ></Image>
+                    </TouchableOpacity>
+                    <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'center' }}>
+                        <TouchableOpacity onPress={() => { this.setUser('role', true) }}>
                             <Text style={user.role ? styles.activeTab : styles.deActiveTab}>  {Utils.translate("auth.professional")}  </Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => this.setUser('role', false)}>
+                        <TouchableOpacity onPress={() => { this.setUser('role', false) }}>
                             <Text style={user.role ? styles.deActiveTab : styles.activeTab}>  {Utils.translate("auth.customer")}  </Text>
                         </TouchableOpacity>
                     </View>
@@ -312,68 +257,70 @@ class Setting extends Component {
                         </TouchableOpacity>
                     </View>
                 </View>
-
-                <KeyboardAwareScrollView style={{ paddingHorizontal: 30, marginBottom: 30 }} keyboardShouldPersistTaps='always'>
+                <KeyboardAwareScrollView style={{ paddingHorizontal: 20, marginBottom: 30 }} keyboardShouldPersistTaps='handled'>
                     <View style={{ flexDirection: "row", width: "100%", justifyContent: "center", alignItems: "center", marginVertical: 10 }}>
-                        <TouchableOpacity onPress={() => this.choosePhoto()}>
+                        <TouchableOpacity onPress={() => this.choosePhoto()} style={{ flexDirection: "column", width: "100%", justifyContent: "center", alignItems: "center" }}>
                             <Image source={{ uri: user.photo }} style={styles.blog_user_img} />
+                            <Text blackColor style={{ marginTop: 5 }}>  {Utils.translate("auth.upload-photo")}  </Text>
                         </TouchableOpacity>
                     </View>
-                    <Text title3 blackColor style={styles.formText}> {Utils.translate("Account.fname")} </Text>
+                    <Text name style={styles.formText}> {Utils.translate("Account.fname")} </Text>
                     <TextInput
                         style={[BaseStyle.textInput]}
                         onChangeText={fname => this.setUser('fname', fname)}
                         autoCorrect={false}
                         placeholder={Utils.translate("Account.fname-placeholder")}
-                        placeholderTextColor={EStyleSheet.value('$grayColor')}
+                        placeholderTextColor={EStyleSheet.value('$placeColor')}
                         value={user.fname}
                         selectionColor={EStyleSheet.value('$primaryColor')}
                     />
-                    <Text title3 blackColor style={styles.formText}> {Utils.translate("Account.lname")} </Text>
+                    <Text name style={styles.formText}> {Utils.translate("Account.lname")} </Text>
                     <TextInput
                         style={[BaseStyle.textInput]}
-                        onChangeText={fname => this.setUser('lname', lname)}
+                        onChangeText={lname => this.setUser('lname', lname)}
                         autoCorrect={false}
                         placeholder={Utils.translate("Account.lname-placeholder")}
-                        placeholderTextColor={EStyleSheet.value('$grayColor')}
+                        placeholderTextColor={EStyleSheet.value('$placeColor')}
                         value={user.lname}
                         selectionColor={EStyleSheet.value('$primaryColor')}
                     />
-                    <Text title3 blackColor style={styles.formText}> {Utils.translate("Account.email")} </Text>
+
+                    <Text name style={styles.formText}> {Utils.translate("Account.email")} </Text>
                     <TextInput
                         style={[BaseStyle.textInput]}
                         onChangeText={email => this.setUser('email', email)}
                         autoCorrect={false}
                         editable={false}
                         placeholder={Utils.translate("Account.email-placeholder")}
-                        placeholderTextColor={EStyleSheet.value('$grayColor')}
+                        placeholderTextColor={EStyleSheet.value('$placeColor')}
                         keyboardType={'email-address'}
                         value={user.email}
                         selectionColor={EStyleSheet.value('$primaryColor')}
                     />
 
                     {user.role == 1 && <>
-                        <Text title3 blackColor style={styles.formText}> {Utils.translate("Account.bio")} </Text>
+                        <Text name style={styles.formText}> {Utils.translate("Account.bio")} </Text>
                         <Textarea
                             containerStyle={styles.textareaContainer}
                             style={styles.textarea}
                             onChangeText={bio => this.setUser('bio', bio)}
                             defaultValue={user.bio}
                             placeholder={Utils.translate("Account.bio-placeholder")}
-                            placeholderTextColor={EStyleSheet.value('$grayColor')}
+                            placeholderTextColor={EStyleSheet.value('$placeColor')}
                             underlineColorAndroid={'transparent'}
                         />
-                        <Text title3 blackColor style={styles.formText}> {Utils.translate("Account.references")} </Text>
+
+                        <Text name style={styles.formText}> {Utils.translate("Account.references")} </Text>
                         <TextInput
                             style={[BaseStyle.textInput]}
                             onChangeText={references => this.setUser('references', references)}
                             autoCorrect={false}
                             placeholder={Utils.translate("Account.references-placeholder")}
-                            placeholderTextColor={EStyleSheet.value('$grayColor')}
+                            placeholderTextColor={EStyleSheet.value('$placeColor')}
                             value={user.references}
                             selectionColor={EStyleSheet.value('$primaryColor')}
                         />
-                        <Text title3 blackColor style={styles.formText}> {Utils.translate("Account.liquor-serving-certification")} </Text>
+                        <Text name style={styles.formText}> {Utils.translate("Account.liquor-serving-certification")} </Text>
                         <View style={{ ...(Platform.OS !== 'android' && { zIndex: 10 }) }}>
                             <DropDownPicker
                                 items={[
@@ -381,15 +328,19 @@ class Setting extends Component {
                                     { label: 'No', value: 'no' },
                                 ]}
                                 defaultValue={user.liquorServingCertification}
-                                containerStyle={{ height: 50 }}
-                                style={{ backgroundColor: '#fafafa' }}
+                                containerStyle={{ height: 46 }}
                                 itemStyle={{ justifyContent: 'flex-start' }}
-                                dropDownStyle={{ backgroundColor: '#fafafa' }}
+                                labelStyle={{
+                                    fontSize: 15,
+                                    textAlign: 'left',
+                                    color: EStyleSheet.value('$textColor')
+                                }}
                                 onChangeItem={item => this.setUser('liquorServingCertification', item.value)}
                             />
                         </View>
+
                         <View style={{ flexDirection: "row", alignItems: "center" }}>
-                            <Text title3 blackColor style={styles.formTextWorkHistory}> {Utils.translate("Account.work-history")} </Text>
+                            <Text name style={styles.formTextWorkHistory}> {Utils.translate("Account.work-history")} </Text>
                             {user.histories.length > 1 &&
                                 <TouchableOpacity style={{ marginLeft: 10, marginRight: 10 }} onPress={() => { this.minusHistory(); }}>
                                     <Icon name={'minus'}></Icon>
@@ -406,7 +357,7 @@ class Setting extends Component {
                                     onChangeText={company => this.setHistory(key, 'company', company)}
                                     autoCorrect={false}
                                     placeholder={Utils.translate("Account.company-placeholder")}
-                                    placeholderTextColor={EStyleSheet.value('$grayColor')}
+                                    placeholderTextColor={EStyleSheet.value('$placeColor')}
                                     value={item.company}
                                     selectionColor={EStyleSheet.value('$primaryColor')}
                                 />
@@ -415,7 +366,7 @@ class Setting extends Component {
                                     onChangeText={title => this.setHistory(key, 'title', title)}
                                     autoCorrect={false}
                                     placeholder={Utils.translate("Account.title-placeholder")}
-                                    placeholderTextColor={EStyleSheet.value('$grayColor')}
+                                    placeholderTextColor={EStyleSheet.value('$placeColor')}
                                     value={item.title}
                                     selectionColor={EStyleSheet.value('$primaryColor')}
                                 />
@@ -424,17 +375,17 @@ class Setting extends Component {
                                     onChangeText={years => this.setHistory(key, 'years', years)}
                                     autoCorrect={false}
                                     placeholder={Utils.translate("Account.years-placeholder")}
-                                    placeholderTextColor={EStyleSheet.value('$grayColor')}
+                                    placeholderTextColor={EStyleSheet.value('$placeColor')}
                                     keyboardType='numeric'
                                     value={item.years}
                                     selectionColor={EStyleSheet.value('$primaryColor')}
                                 />
                             </View>))}
 
-                        <Text title3 blackColor style={styles.formText}> {Utils.translate("Account.typeOfProfessional")} </Text>
+                        <Text name style={styles.formText}> {Utils.translate("Account.typeOfProfessional")} </Text>
                         <View style={styles.locationForm}>
                             <SectionedMultiSelect
-                                items={items}
+                                items={type_items}
                                 IconRenderer={IconMaterial}
                                 searchPlaceholderText="Search types"
                                 uniqueKey="id"
@@ -450,11 +401,12 @@ class Setting extends Component {
                                     success: EStyleSheet.value('$primaryColor')
                                 }}
                                 hideSearch={true}
-                                styles={{ container: { marginVertical: Platform.OS !== 'android' ? 150 : 50, paddingTop: 20 }, selectedSubItemText :{color:EStyleSheet.value('$primaryColor')}}}
+                                styles={{ container: { marginVertical: Platform.OS !== 'android' ? 150 : 50, paddingTop: 20 }, selectedSubItemText: { color: EStyleSheet.value('$primaryColor') } }}
                             />
                         </View>
+
                         {this.hasPermission() && <>
-                            <Text title3 blackColor style={styles.formText}> {Utils.translate("Account.style-of-cooking")} </Text>
+                            <Text name style={styles.formText}> {Utils.translate("Account.style-of-cooking")} </Text>
                             <View style={styles.locationForm}>
                                 <SectionedMultiSelect
                                     items={style_items}
@@ -473,36 +425,38 @@ class Setting extends Component {
                                         success: EStyleSheet.value('$primaryColor')
                                     }}
                                     hideSearch={true}
-                                    styles={{ container: { marginVertical: Platform.OS !== 'android' ? 150 : 50, paddingTop: 20 } , selectedSubItemText :{color:EStyleSheet.value('$primaryColor')}}}
+                                    styles={{ container: { marginVertical: Platform.OS !== 'android' ? 150 : 50, paddingTop: 20 }, selectedSubItemText: { color: EStyleSheet.value('$primaryColor') } }}
                                 />
                             </View>
                         </>}
-                        <Text title3 blackColor style={styles.formText} > {Utils.translate("Account.location")} </Text>
+                        <Text name style={styles.formText} > {Utils.translate("Account.location")} </Text>
                         <View style={styles.locationForm} >
                             <GooglePlacesAutocomplete
                                 placeholder={Utils.translate("Account.location-placeholder")}
-                                onPress={(data, details = null) => {
+                                fetchDetails={true}
+                                onPress={(data, detail) => {
                                     this.setUser('location', data.description);
+                                    this.setUser('geolocation', detail.geometry.location);
                                 }}
                                 query={{
-                                    key: 'AIzaSyDMrIaIY6QY_kiOz0VSZkN36HBd4cnfkH8',
+                                    key: 'AIzaSyCjCZM8TG6uH8QnEYgEB31aTFzDKQhMF2k',
                                     language: 'en',
                                 }}
                                 ref={ref => this.LocationRef = ref}
                             />
                         </View>
-                        <Text title3 blackColor style={styles.formText}> {Utils.translate("Account.postal-code")} </Text>
+                        <Text name style={styles.formText}> {Utils.translate("Account.postal-code")} </Text>
                         <TextInput
                             style={[BaseStyle.textInput]}
                             onChangeText={postalCode => this.setUser('postalCode', postalCode)}
                             placeholder={Utils.translate("Account.postal-code-placeholder")}
                             multiline={false}
-                            placeholderTextColor={EStyleSheet.value('$grayColor')}
+                            placeholderTextColor={EStyleSheet.value('$placeColor')}
                             value={user.postalCode}
                             selectionColor={EStyleSheet.value('$primaryColor')}
                         />
                     </>}
-                    <View style={{ width: "100%", marginTop: 30 }}>
+                    <View style={{ width: "100%", marginTop: 10, }}>
                         <Button
                             full
                             loading={loading}
@@ -515,17 +469,9 @@ class Setting extends Component {
                         </Button>
                     </View>
                 </KeyboardAwareScrollView>
-                <Toast
-                    ref={ref => this.ToastRef = ref}
-                    position='top'
-                    fadeInDuration={750}
-                    fadeOutDuration={1000}
-                    opacity={0.8}
-                    style={{ backgroundColor: EStyleSheet.value('$errorColor'), width: '80%', height: 50, justifyContent: 'center', alignItems: 'center' }}
-                    textStyle={{ color: EStyleSheet.value('$whiteColor'), fontWeight: "bold", fontSize: 20 }}
-                />
+                <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
             </SafeAreaView>
-        )
+        );
     }
 }
 

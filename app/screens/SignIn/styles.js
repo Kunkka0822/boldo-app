@@ -3,7 +3,7 @@ import * as Utils from "@utils";
 export default EStyleSheet.create({
   contain: {
     alignItems: "center",
-    paddingHorizontal: 30,
+    paddingHorizontal: 20,
   },
 
   logo: {

@@ -15,6 +15,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import * as Utils from "@utils";
 import { AppearanceProvider, useColorScheme} from 'react-native-appearance'
 import EStyleSheet from 'react-native-extended-stylesheet';
+import Navigaion from "./navigation";
 
 LogBox.ignoreAllLogs(true)
 const PREF_THEME = 'theme';
@@ -29,7 +30,6 @@ class App extends Component {
   componentWillUnmount() {
   }
   render() {
-    const Navigaion = require("./navigation");
     return (
       <AppearanceProvider key={Math.random()} >
         <Provider store={store}>

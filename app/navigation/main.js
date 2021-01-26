@@ -1,221 +1,94 @@
 import React from "react";
-import { createBottomTabNavigator } from "react-navigation-tabs";
-import { createStackNavigator } from "react-navigation-stack";
-import { BaseStyle } from "@config";
-import { Icon } from "@components";
-import * as Utils from "@utils";
-import { Image} from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
+
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+// import AnimatedTabBar, { TabsConfigsType } from 'curved-bottom-navigation-bar'
+import AnimatedTabBar, { TabsConfigsType } from '../custom_module/curved-bottom-navigation-bar-custom';
+import { connect } from "react-redux";
+import { Badge } from 'react-native-paper';
+import { Image, View, ImageBackground } from 'react-native';
 import { Images } from "@config";
-import { store, SetPrefrence, GetPrefrence } from "@store";
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { store } from "@store";
 
 /* Stack Screen */
-
-import Home from "@screens/Home";
-import Connection from "@screens/Connection";
 import PostList from "@screens/PostList";
-import Pending from "@screens/Pending";
 import Recipes from "@screens/Recipes";
+import Address from "@screens/Address";
+import Profile from "@screens/Profile";
+import Setting from "@screens/Setting";
 import NewPost from "@screens/NewPost";
 import NewRecipe from "@screens/NewRecipe";
-import Account from "@screens/Account";
-import Blockeds from "@screens/Blockeds";
-import Setting from "@screens/Setting";
-import Profile from "@screens/Profile";
+import BlackLists from "@screens/BlackLists";
 import Chat from "@screens/Chat";
-import Address from "@screens/Address";
 
-const getTabBarOptions = (theme) => {
-  if (theme == 'dark')
-    return {
-      tabBarOptions: {
-        showIcon: true,
-        showLabel: true,
-        activeTintColor: EStyleSheet.value('$primaryColor'),
-        inactiveTintColor: EStyleSheet.value('$whiteColor'),
-        style: {
-          backgroundColor: EStyleSheet.value('$lightField')
-        },
-        labelStyle: {
-          fontSize: 12
-        },
-      }
-    }
-  else return null;
+const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+
+const renderIcon = (props) => {
+  const { notification, name, image} = props;
+  return (
+    <View style={{ width: 40, height: 40, justifyContent: 'center', alignItems: 'center' }}>
+      {notification?.notifications?.[image] > 0 && <Badge style={{ position: 'absolute', top: 4, right: 4, zIndex: 10 }}>{notification?.notifications?.[image]}</Badge>}
+      <Image source={name} style={{ width: 20, height: 20, resizeMode: 'contain' }} />
+    </View>
+  )
 }
-// Tab bar navigation
-const routeConfigs = {
-  Home: {
-    screen: Home,
-    navigationOptions: ({ theme }) => ({
-      title: '',
-      ...getTabBarOptions(theme),
-      tabBarIcon: ({ focused, tintColor }) => {
-        if(focused)
-          return <Image source={Images.home_on} />
-        return <Image source={Images.home} />
-      }
-    })
-  },
-  // Pending: {
-  //   screen: Pending,
-  //   navigationOptions: ({ theme }) => ({
-  //     title: '',
-  //     ...getTabBarOptions(theme),
-  //     tabBarIcon: ({ focused, tintColor }) => {
-  //     if(focused)
-  //       return <Image source={Images.clock_on} />
-  //     return <Image source={Images.clock} />
-  //     }
-  //   })
-  // },
-  Posts: {
-    screen: PostList,
-    navigationOptions: ({ theme }) => ({
-      title: '',
-      ...getTabBarOptions(theme),
-      tabBarIcon: ({ focused, tintColor }) => {
-        if(focused)
-          return <Image source={Images.link_on} />
-        return <Image source={Images.link} />
-      }
-    })
+
+const mapStateToProps = (state) => (state)
+const IconComponent = connect(mapStateToProps, null)(renderIcon);
+
+const tabs = {
+  PostList: {
+    icon: ({ progress }) => <IconComponent name={Images.post} image={"posts"}/>
   },
   Recipes: {
-    screen: Recipes,
-    navigationOptions: ({ theme }) => ({
-      title: '',
-      ...getTabBarOptions(theme),
-      tabBarIcon: ({ focused, tintColor }) => {
-      if(focused)
-        return <Image source={Images.hatchef_on} />
-      return <Image source={Images.hatchef} />
-      }
-    })
+    icon: ({ progress }) => <IconComponent name={Images.chef} image={"recipes"}/>
   },
   Address: {
-    screen: Address,
-    navigationOptions: ({ theme }) => ({
-      title: '',
-      ...getTabBarOptions(theme),
-      tabBarIcon: ({ focused, tintColor }) => {
-      if(focused)
-        return <Image source={Images.chat_on} />
-      return <Image source={Images.chat} />
-      }
-    })
+    icon: ({ progress }) => <IconComponent name={Images.chat} image={"chats"}/>
   },
-};
-
-const routeConfigsPro = {
-  Posts: {
-    screen: PostList,
-    navigationOptions: ({ theme }) => ({
-      title: '',
-      ...getTabBarOptions(theme),
-      tabBarIcon: ({ focused, tintColor }) => {
-        if(focused)
-          return <Image source={Images.home_on} />
-        return <Image source={Images.home} />
-      }
-    })
+  Profile: {
+    icon: ({ progress }) => <Image source={Images.profile} style={{ width: 20, height: 20, resizeMode: 'contain' }} />
   },
-  Recipes: {
-    screen: Recipes,
-    navigationOptions: ({ theme }) => ({
-      title: '',
-      ...getTabBarOptions(theme),
-      tabBarIcon: ({ focused, tintColor }) => {
-      if(focused)
-        return <Image source={Images.hatchef_on} />
-      return <Image source={Images.hatchef} />
-      }
-    })
-  },
-  Address: {
-    screen: Address,
-    navigationOptions: ({ theme }) => ({
-      title: '',
-      ...getTabBarOptions(theme),
-      tabBarIcon: ({ focused, tintColor }) => {
-      if(focused)
-        return <Image source={Images.chat_on} />
-      return <Image source={Images.chat} />
-      }
-    })
-  },
- 
-};
+}
 
-// Define bottom navigator as a screen in stack
-const role = store.getState().auth?.login?.data?.user?.role;
-const defaultRouteConf = role == 1 ? routeConfigsPro : routeConfigs;
-const bottomTabNavigatorConfig = {
-  initialRouteName: role == 1 ?"Posts" : "Home",
-  tabBarOptions: {
-    showIcon: true,
-    showLabel: true,
-    activeTintColor: EStyleSheet.value('$primaryColor'),
-    inactiveTintColor: EStyleSheet.value('$grayColor'),
-    style: BaseStyle.tabBar,
-    labelStyle: {
-      fontSize: 5
-    },
-  }
-};
+const TabNavigator = () => {
+  return (
+    <Tab.Navigator
+      tabBar={props => (
+        <AnimatedTabBar barHeight={40} holeHeight={30} dotSize={40} barColor={EStyleSheet.value('$primaryColor')} dotColor={EStyleSheet.value('$primaryColor')} tabs={tabs} {...props} />
+      )}
+    >
+      <Tab.Screen name="PostList" component={PostList}/>
+      <Tab.Screen name="Recipes" component={Recipes} />
+      <Tab.Screen name="Address" component={Address} />
+      <Tab.Screen name="Profile" component={Profile} />
+    </Tab.Navigator>
+  )
+}
 
-const BottomTabNavigator = createBottomTabNavigator(defaultRouteConf, bottomTabNavigatorConfig);
 
-// Main Stack View App
-const StackNavigator = createStackNavigator(
-  {
-    BottomTabNavigator: {
-      screen: BottomTabNavigator
-    },
-  },
-  {
-    headerMode: "none",
-    initialRouteName: "BottomTabNavigator"
-  }
-);
+export default function Navigation() {
+  return (
+    <SafeAreaProvider>
+      <NavigationContainer >
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}>
+          <Stack.Screen name="TabNavigator" component={TabNavigator} />
+          <Stack.Screen name="Setting" component={Setting} />
+          <Stack.Screen name="NewPost" component={NewPost} />
+          <Stack.Screen name="NewRecipe" component={NewRecipe} />
+          <Stack.Screen name="BlackLists" component={BlackLists} />
+          <Stack.Screen name="Chat" component={Chat} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
+  )
+}
 
-// Define Root Stack support Modal Screen
-const RootStack = createStackNavigator(
-  {
-    StackNavigator: {
-      screen: StackNavigator
-    },
-    NewPost: {
-      screen: NewPost
-    },
-    NewRecipe:{
-      screen: NewRecipe
-    },
-    Account:{
-      screen: Account
-    },
-    Blockeds:{
-      screen: Blockeds
-    },
-    Setting:{
-      screen: Setting
-    },
-    Profile:{
-      screen: Profile
-    },
-    Chat:{
-      screen: Chat
-    },
-  },
-  {
-    mode: "modal",
-    headerMode: "none",
-    initialRouteName: "StackNavigator",
-    transitionConfig: screen => {
-      return handleCustomTransition(screen);
-    },
-    transparentCard: true
-  }
-);
-
-export default RootStack;
