@@ -32,6 +32,14 @@ const onNotification = data => {
   };
 };
 
+const onToast = data => {
+  return {
+    type: actionTypes.PREF_TOAST,
+    data
+  };
+};
+
+
 class Loading extends Component {
   constructor(props) {
     super(props);
@@ -49,7 +57,7 @@ class Loading extends Component {
     // if (this.removeOnNotification) {
     //   this.removeOnNotification()
     // }
- 
+
     // if (this.removeonTokenRefresh) {
     //   this.removeonTokenRefresh()
     // }
@@ -124,29 +132,37 @@ class Loading extends Component {
 
   onTokenRefreshListener = () => {
     this.removeonTokenRefresh = messages.onTokenRefresh(token => {
-      
+
     })
   }
 
   onNotificationListener = () => {
     this.removeOnNotification = notifications.onNotification(notification => {
       let notificationDatas = this.props.notification?.notifications;
-      if(notificationDatas == undefined){
+      if (notificationDatas == undefined) {
         notificationDatas = {
-          chats:0,
-          posts:0,
-          recipes:0,
+          chats: 0,
+          posts: 0,
+          recipes: 0,
         }
       }
-      
+
       let type = notification._data.type;
       if (type == "new-message") {
-        notificationDatas.chats ++;
-      }else if(type == "new-post"){
-        notificationDatas.posts ++;
-      }else if(type == "new-recipe"){
-        notificationDatas.recipes ++;
-      }else if(type == 'changed-type'){
+        notificationDatas.chats++;
+        let text1 = notification._title;
+        let text2 = notification._body;
+        let toastData = {
+          text1: text1,
+          text2: text2,
+          type: 'success',
+        }
+        this.props.dispatch(onToast(toastData));
+      } else if (type == "new-post") {
+        notificationDatas.posts++;
+      } else if (type == "new-recipe") {
+        notificationDatas.recipes++;
+      } else if (type == 'changed-type') {
         return RNRestart.Restart();
       }
 

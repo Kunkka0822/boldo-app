@@ -23,34 +23,9 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import style from "../../reducers/style";
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import Toast from 'react-native-toast-message';
 import RNRestart from 'react-native-restart';
 import { EventRegister } from 'react-native-event-listeners'
 import { connect } from "react-redux";
-
-const toastConfig = {
-    success: () => { },
-    error: ({ text1 }) => (
-        <View
-            style={{
-                paddingHorizontal: 20, justifyContent: 'center', alignItems: 'center',
-                height: 50, width: '80%', backgroundColor: EStyleSheet.value('$errorColor'), borderRadius: 25
-            }}>
-            <Text style={{ textAlign: 'center', color: EStyleSheet.value('$whiteColor'), fontSize: 16, fontWeight: 'bold' }}>{text1}</Text>
-        </View>
-    ),
-    chat: ({ text1, text2 }) => (
-        <View
-          style={{
-            paddingHorizontal: 20, justifyContent: 'center', marginTop: 50,
-            height: 50, width: '80%', backgroundColor: EStyleSheet.value('$successColor'), borderRadius: 5,
-            flexDirection: 'column'
-          }}>
-          <Text style={{ color: EStyleSheet.value('$blackColor'), fontSize: 14, fontWeight: 'bold', }}>{text1}</Text>
-          <Text style={{ color: EStyleSheet.value('$blackColor'), fontSize: 12 }}>{text2}</Text>
-        </View>
-      ),
-};
 
 const onLogin = data => {
     return {
@@ -73,7 +48,6 @@ class Setting extends Component {
     componentDidMount() {
         this.listener = EventRegister.addEventListener('notification', (data) => {
             if (data == "new-message") {
-                console.log("new message received");
             }
         })
 
@@ -180,47 +154,47 @@ class Setting extends Component {
         const { navigation } = this.props;
         let { user } = this.state;
         if (user.fname == "") {
-            Toast.show({ text1: Utils.translate("Account.invalid-name"), type: 'error' });
+            this.showToast(Utils.translate("Account.invalid-name"));
             return;
         } else if (!Utils.EMAIL_VALIDATE.test(String(user.email).toLowerCase())) {
-            Toast.show({ text1: Utils.translate("Account.invalid-email"), type: 'error' });
+            this.showToast(Utils.translate("Account.invalid-email"));
             return;
         }
 
         if (user.role == 1) {
             if (user.bio == "") {
-                Toast.show({text1: Utils.translate("Account.invalid-bio"), type:'error'});
+                this.showToast(Utils.translate("Account.invalid-bio"));
                 return;
             } else if (user.references == "") {
-                Toast.show({text1: Utils.translate("Account.invalid-references"), type:'error'});
+                this.showToast(Utils.translate("Account.invalid-references"));
                 return;
             } else if (user.liquorServingCertification == "") {
-                Toast.show({text1: Utils.translate("Account.invalid-liquorservingcertification"), type:'error'});
+                this.showToast(Utils.translate("Account.invalid-liquorservingcertification"));
                 return;
             }  else if (user.typeOfProfessional.length == 0) {
-                Toast.show({text1: Utils.translate("Account.invalid-typeofprofessional"), type:'error'});
+                this.showToast(Utils.translate("Account.invalid-typeofprofessional"));
                 return;
             } else if (user.styleOfCooking.length == 0 && this.hasPermission()) {
-                Toast.show({text1: Utils.translate("Account.invalid-styleofcooking"), type:'error'});
+                this.showToast(Utils.translate("Account.invalid-styleofcooking"));
                 return;
             } else if (user.location == "") {
-                Toast.show({text1: Utils.translate("Account.invalid-location"), type:'error'});
+                this.showToast(Utils.translate("Account.invalid-location"));
                 return;
             } else if (user.histories.length == 0) {
-                Toast.show({text1: Utils.translate("Account.invalid-histories"), type:'error'});
+                this.showToast(Utils.translate("Account.invalid-postal-code"));
                 return;
             }
         }
         for (let i = 0; i < user.histories.length; i++) {
             let history = user.histories[i];
             if (history.company == "") {
-                Toast.show({text1: Utils.translate("Account.invalid-company"), type:'error'});
+                this.showToast(Utils.translate("Account.invalid-company"));
                 return;
             } else if (history.title == "") {
-                Toast.show({text1: Utils.translate("Account.invalid-title"), type:'error'});
+                this.showToast(Utils.translate("Account.invalid-title"));
                 return;
             } else if (history.years == "") {
-                Toast.show({text1: Utils.translate("Account.invalid-years"), type:'error'});
+                this.showToast(Utils.translate("Account.invalid-years"));
                 return;
             }
         }
@@ -479,7 +453,6 @@ class Setting extends Component {
                         </Button>
                     </View>
                 </KeyboardAwareScrollView>
-                <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
             </SafeAreaView>
         );
     }

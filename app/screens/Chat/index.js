@@ -14,7 +14,6 @@ import MessageToast, { BaseToast } from 'react-native-toast-message';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 import { connect } from "react-redux";
-import Toast from 'react-native-toast-message';
 import Textarea from 'react-native-textarea';
 
 const onNotification = data => {
@@ -24,36 +23,11 @@ const onNotification = data => {
     };
 };
 
-const toastConfig = {
-    success: ({ text1 }) => (
-        <View
-            style={{
-                paddingHorizontal: 20, justifyContent: 'center', alignItems: 'center', marginTop: 180,
-                height: 50, width: '80%', backgroundColor: EStyleSheet.value('$successColor'), borderRadius: 25
-            }}>
-            <Text style={{ textAlign: 'center', color: EStyleSheet.value('$blackColor'), fontSize: 16, fontWeight: 'bold', }}>{text1}</Text>
-        </View>
-    ),
-    error: ({ text1 }) => (
-        <View
-            style={{
-                paddingHorizontal: 20, justifyContent: 'center', alignItems: 'center',
-                height: 50, width: '80%', backgroundColor: EStyleSheet.value('$errorColor'), borderRadius: 25, marginTop: 180,
-            }}>
-            <Text style={{ textAlign: 'center', color: EStyleSheet.value('$whiteColor'), fontSize: 16, fontWeight: 'bold' }}>{text1}</Text>
-        </View>
-    ),
-    chat: ({ text1, text2 }) => (
-        <View
-          style={{
-            paddingHorizontal: 20, justifyContent: 'center', marginTop: 50,
-            height: 50, width: '80%', backgroundColor: EStyleSheet.value('$successColor'), borderRadius: 5,
-            flexDirection: 'column'
-          }}>
-          <Text style={{ color: EStyleSheet.value('$blackColor'), fontSize: 14, fontWeight: 'bold', }}>{text1}</Text>
-          <Text style={{ color: EStyleSheet.value('$blackColor'), fontSize: 12 }}>{text2}</Text>
-        </View>
-      ),
+const onToast = data => {
+    return {
+        type: actionTypes.PREF_TOAST,
+        data
+    };
 };
 
 class Chat extends Component {
@@ -95,13 +69,22 @@ class Chat extends Component {
         }
     }
 
+    showToast(text1) {
+        let toastData = {
+            text1: text1,
+            text2: null,
+            type: 'error',
+        }
+        this.props.dispatch(onToast(toastData));
+    }
+
     onClose() {
         this.props.navigation.goBack();
     }
 
     sendChat(msg) {
         if (this.room.active != 1) {
-            Toast.show({ text1: "You can't chat with this user.", type: 'error' },);
+            this.showToast("You can't chat with this user.");
             return;
         }
         msg[0].user = { _id: this.state.user.id, name: this.state.user.fname, avatar: this.state.user.photo };
@@ -121,7 +104,7 @@ class Chat extends Component {
             .then(response => {
             })
             .catch(err => {
-                Toast.show({ text1: "You can't chat with this user.", type: 'error' });
+                this.showToast("You can't chat with this user.");
                 this.room.active = 0;
             })
         this.setState({ photo: '' });
@@ -141,7 +124,7 @@ class Chat extends Component {
     }
 
     onLoadEarlier() {
-        if(this.loading){
+        if (this.loading) {
             return;
         }
         this.page++;
@@ -155,16 +138,16 @@ class Chat extends Component {
         }, () => {
             apiActions.getMessage(model)
                 .then(response => {
-                    if(response.data?.length> 0){
+                    if (response.data?.length > 0) {
                         this.setState(previousState => ({
                             messages: GiftedChat.append(response.data, previousState.messages),
                         }))
-                    }else{
+                    } else {
 
                     }
                 })
                 .catch(err => {
-                    Toast.show({ text1: "You can't chat with this user.", type: 'error' });
+                    this.showToast("You can't chat with this user.");
                 })
                 .finally(
                     () => this.setState({ loading: false })
@@ -241,7 +224,7 @@ class Chat extends Component {
                 }))
             })
             .catch(err => {
-                Toast.show({ text1: "You can't chat with this user.", type: 'error' });
+                this.showToast("You can't chat with this user.");
             })
     }
 
@@ -331,7 +314,6 @@ class Chat extends Component {
                     alwaysShowSend={true}
                 // renderComposer={(props) => <Composer {...props} textInputProps={this.onImageChange.bind(this)} />}
                 />
-                <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
             </SafeAreaView>);
     }
 }

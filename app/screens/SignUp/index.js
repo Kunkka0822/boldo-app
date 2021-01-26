@@ -23,33 +23,16 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import style from "../../reducers/style";
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import Toast from 'react-native-toast-message';
+import { connect } from "react-redux";
 
-const toastConfig = {
-  success: () => { },
-  error: ({ text1 }) => (
-    <View
-      style={{
-        paddingHorizontal: 20, justifyContent: 'center', alignItems: 'center',
-        height: 50, width: '80%', backgroundColor: EStyleSheet.value('$errorColor'), borderRadius: 25
-      }}>
-      <Text style={{ textAlign: 'center', color: EStyleSheet.value('$whiteColor'), fontSize: 16, fontWeight: 'bold' }}>{text1}</Text>
-    </View>
-  ),
-  chat: ({ text1, text2 }) => (
-    <View
-      style={{
-        paddingHorizontal: 20, justifyContent: 'center', marginTop: 50,
-        height: 50, width: '80%', backgroundColor: EStyleSheet.value('$successColor'), borderRadius: 5,
-        flexDirection: 'column'
-      }}>
-      <Text style={{ color: EStyleSheet.value('$blackColor'), fontSize: 14, fontWeight: 'bold', }}>{text1}</Text>
-      <Text style={{ color: EStyleSheet.value('$blackColor'), fontSize: 12 }}>{text2}</Text>
-    </View>
-  ),
+const onToast = data => {
+  return {
+    type: actionTypes.PREF_TOAST,
+    data
+  };
 };
 
-export default class SignUp extends Component {
+class SignUp extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -201,47 +184,56 @@ export default class SignUp extends Component {
     this.setState({ histories: histories });
   }
 
+  showToast(text1) {
+    let toastData = {
+      text1: text1,
+      text2: null,
+      type: 'error',
+    }
+    this.props.dispatch(onToast(toastData));
+  }
+
   onSignUp() {
     const { navigation } = this.props;
     let { loading, fname, lname, password, cPassword, email, success, professional, photo64, bio, references, styleOfCooking,
       liquorServingCertification, location, postalCode, typeOfProfessional, histories, geolocation, type_items, style_items } = this.state;
     if (fname == "") {
       this.setState({ success: { ...success, fname: false } });
-      Toast.show({ text1: Utils.translate("Account.invalid-name"), type: 'error' },);
+      this.showToast(Utils.translate("Account.invalid-name"));
       return;
     } else if (!Utils.EMAIL_VALIDATE.test(String(email).toLowerCase())) {
       this.setState({ success: { ...success, email: false } });
-      Toast.show({ text1: Utils.translate("Account.invalid-email"), type: 'error' },);
+      this.showToast(Utils.translate("Account.invalid-email"));
       return;
     }
     if (professional) {
       if (bio == "") {
         this.setState({ success: { ...success, bio: false } });
-        Toast.show({ text1: Utils.translate("Account.invalid-bio"), type: 'error' },);
+        this.showToast(Utils.translate("Account.invalid-bio"));
         return;
       } else if (references == "") {
         this.setState({ success: { ...success, references: false } });
-        Toast.show({ text1: Utils.translate("Account.invalid-references"), type: 'error' },);
+        this.showToast(Utils.translate("Account.invalid-references"));
         return;
       } else if (liquorServingCertification == "") {
         this.setState({ success: { ...success, liquorServingCertification: false } });
-        Toast.show({ text1: Utils.translate("Account.invalid-liquorservingcertification"), type: 'error' },);
+        this.showToast(Utils.translate("Account.invalid-liquorservingcertification"));
         return;
       } else if (typeOfProfessional.length == 0) {
         this.setState({ success: { ...success, location: false } });
-        Toast.show({ text1: Utils.translate("Account.invalid-typeofprofessional"), type: 'error' },);
+        this.showToast(Utils.translate("Account.invalid-typeofprofessional"));
         return;
       } else if (styleOfCooking.length == 0 && this.hasPermission()) {
         this.setState({ success: { ...success, styleOfCooking: false } });
-        Toast.show({ text1: Utils.translate("Account.invalid-styleofcooking"), type: 'error' },);
+        this.showToast(Utils.translate("Account.invalid-styleofcooking"));
         return;
       } else if (location == "") {
         this.setState({ success: { ...success, location: false } });
-        Toast.show({ text1: Utils.translate("Account.invalid-location"), type: 'error' },);
+        this.showToast(Utils.translate("Account.invalid-location"));
         return;
       } else if (postalCode == "") {
         this.setState({ success: { ...success, location: false } });
-        Toast.show({ text1: Utils.translate("Account.invalid-postal-code"), type: 'error' },);
+        this.showToast(Utils.translate("Account.invalid-postal-code"));
         return;
       }
 
@@ -249,15 +241,15 @@ export default class SignUp extends Component {
         let history = histories[i];
         if (history.company == "") {
           this.setHistory(i, history, "success.company", false);
-          Toast.show({ text1: Utils.translate("Account.invalid-company"), type: 'error' },);
+          this.showToast(Utils.translate("Account.invalid-company"));
           return;
         } else if (history.title == "") {
           this.setHistory(i, history, "success.title", false);
-          Toast.show({ text1: Utils.translate("Account.invalid-title"), type: 'error' },);
+          this.showToast(Utils.translate("Account.invalid-title"));
           return;
         } else if (history.years == "") {
           this.setHistory(i, history, "success.years", false);
-          Toast.show({ text1: Utils.translate("Account.invalid-years"), type: 'error' },);
+          this.showToast(Utils.translate("Account.invalid-years"));
           return;
         }
       }
@@ -265,15 +257,15 @@ export default class SignUp extends Component {
 
     if (password == "") {
       this.setState({ success: { ...success, password: false } });
-      Toast.show({ text1: Utils.translate("Account.invalid-password"), type: 'error' },);
+      this.showToast(Utils.translate("Account.invalid-password"));
       return;
     } else if (cPassword == "") {
       this.setState({ success: { ...success, cPassword: false } });
-      Toast.show({ text1: Utils.translate("Account.invalid-cpassword"), type: 'error' },);
+      this.showToast(Utils.translate("Account.invalid-cpassword"));
       return;
     } else if (cPassword != password) {
       this.setState({ success: { ...success, cPassword: false } });
-      Toast.show({ text1: Utils.translate("Account.notsame-cpassword"), type: 'error' },);
+      this.showToast(Utils.translate("Account.notsame-cpassword"));
       return;
     }
 
@@ -319,13 +311,13 @@ export default class SignUp extends Component {
         apiActions.registration(model)
           .then(async response => {
             if (response.data == "exists") {
-              Toast.show({ text1: Utils.translate("messages.register-exist-email-msg"), type: 'error' });
+              this.showToast(Utils.translate("messages.register-exist-email-msg"));
             } else {
               navigation.navigate("SignIn");
             }
           })
           .catch(err => {
-            Toast.show({ text1: Utils.translate("messages.register-failed"), type: 'error' });
+            this.showToast(Utils.translate("messages.register-failed"));
           })
           .finally(
             () => this.setState({ loading: false })
@@ -346,7 +338,7 @@ export default class SignUp extends Component {
       >
         <View style={{ flexDirection: "row", width: "100%", justifyContent: "center", alignItems: "center", marginTop: 30, paddingHorizontal: 20 }}>
           <TouchableOpacity onPress={() => { this.onClose() }}>
-            <Image source={Images.back} style={{width:20, height:20, resizeMode:'cover'}} ></Image>
+            <Image source={Images.back} style={{ width: 20, height: 20, resizeMode: 'cover' }} ></Image>
           </TouchableOpacity>
           <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'center' }}>
             <TouchableOpacity onPress={() => { this.setState({ professional: true }) }}>
@@ -712,8 +704,17 @@ export default class SignUp extends Component {
             </Button>
           </View>
         </KeyboardAwareScrollView>
-        <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
       </SafeAreaView>
     );
   }
 }
+
+
+const mapStateToProps = (state) => (state);
+const mapDispatchToProps = dispatch => {
+  return {
+    dispatch
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

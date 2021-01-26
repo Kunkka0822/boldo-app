@@ -16,41 +16,8 @@ import { EventRegister } from 'react-native-event-listeners'
 import { connect } from "react-redux";
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import MessageToast, { BaseToast } from 'react-native-toast-message';
-import Toast from 'react-native-toast-message';
 import Textarea from 'react-native-textarea';
 import { Badge } from 'react-native-paper';
-
-const toastConfig = {
-    success: ({ text1 }) => (
-        <View
-            style={{
-                paddingHorizontal: 20, justifyContent: 'center', alignItems: 'center', marginTop: 80,
-                height: 50, width: '80%', backgroundColor: EStyleSheet.value('$successColor'), borderRadius: 25
-            }}>
-            <Text style={{ textAlign: 'center', color: EStyleSheet.value('$blackColor'), fontSize: 16, fontWeight: 'bold', }}>{text1}</Text>
-        </View>
-    ),
-    error: ({ text1 }) => (
-        <View
-            style={{
-                paddingHorizontal: 20, justifyContent: 'center', alignItems: 'center',
-                height: 50, width: '80%', backgroundColor: EStyleSheet.value('$errorColor'), borderRadius: 25, marginTop: 80,
-            }}>
-            <Text style={{ textAlign: 'center', color: EStyleSheet.value('$whiteColor'), fontSize: 16, fontWeight: 'bold' }}>{text1}</Text>
-        </View>
-    ),
-    chat: ({ text1, text2 }) => (
-        <View
-          style={{
-            paddingHorizontal: 20, justifyContent: 'center', marginTop: 50,
-            height: 50, width: '80%', backgroundColor: EStyleSheet.value('$successColor'), borderRadius: 5,
-            flexDirection: 'column'
-          }}>
-          <Text style={{ color: EStyleSheet.value('$blackColor'), fontSize: 14, fontWeight: 'bold', }}>{text1}</Text>
-          <Text style={{ color: EStyleSheet.value('$blackColor'), fontSize: 12 }}>{text2}</Text>
-        </View>
-      ),
-};
 
 const onNotification = data => {
     return {
@@ -77,9 +44,6 @@ class Address extends Component {
         this.listener = EventRegister.addEventListener('notification', (data) => {
             let type = data._data.type;
             if (type == "new-message") {
-                let text = data._data.text;
-                let name = data._data.name;
-                Toast.show({ text1: name, text2:text, type: 'chat' },);
                 this.getContacts();
             } else if (type == "new-recipe") {
             }
@@ -224,7 +188,6 @@ class Address extends Component {
                             <Text style={{ marginTop: 50, fontSize: 20, color: EStyleSheet.value('$textColor') }}> There are no contacts</Text>
                         </View>}
                 </ScrollView>
-                <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
             </SafeAreaView>
         )
     }

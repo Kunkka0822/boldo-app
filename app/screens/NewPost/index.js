@@ -4,7 +4,7 @@ import { BaseStyle, Images, BaseConfig } from "@config";
 import { Button, Icon, Image as ImageComponent, Text } from "@components";
 import * as Utils from "@utils";
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { apiActions } from "@actions";
+import { apiActions, actionTypes } from "@actions";
 import { store } from "@store";
 import styles from "./styles";
 import { Searchbar } from 'react-native-paper';
@@ -17,34 +17,18 @@ import { EventRegister } from 'react-native-event-listeners'
 import ImageRotate from 'react-native-image-rotate';
 import ImageResizer from 'react-native-image-resizer';
 import RNFetchBlob from 'rn-fetch-blob';
-import Toast from 'react-native-toast-message';
 import ImgToBase64 from 'react-native-image-base64';
 import { cos } from "react-native-reanimated";
+import { connect } from "react-redux";
 
-const toastConfig = {
-  success: () => { },
-  error: ({ text1 }) => (
-    <View
-      style={{
-        paddingHorizontal: 20, justifyContent: 'center', alignItems: 'center',
-        height: 50, width: '80%', backgroundColor: EStyleSheet.value('$errorColor'), borderRadius: 25
-      }}>
-      <Text style={{ textAlign: 'center', color: EStyleSheet.value('$whiteColor'), fontSize: 16, fontWeight: 'bold' }}>{text1}</Text>
-    </View>
-  ),
-  chat: ({ text1, text2 }) => (
-    <View
-      style={{
-        paddingHorizontal: 20, justifyContent: 'center', marginTop: 50,
-        height: 50, width: '80%', backgroundColor: EStyleSheet.value('$successColor'), borderRadius: 5,
-        flexDirection: 'column'
-      }}>
-      <Text style={{ color: EStyleSheet.value('$blackColor'), fontSize: 14, fontWeight: 'bold', }}>{text1}</Text>
-      <Text style={{ color: EStyleSheet.value('$blackColor'), fontSize: 12 }}>{text2}</Text>
-    </View>
-  ),
+const onToast = data => {
+  return {
+    type: actionTypes.PREF_TOAST,
+    data
+  };
 };
-export default class NewPost extends Component {
+
+class NewPost extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -91,6 +75,15 @@ export default class NewPost extends Component {
 
   onClose() {
     this.props.navigation.goBack();
+  }
+
+  showToast(text1) {
+    let toastData = {
+      text1: text1,
+      text2: null,
+      type: 'error',
+    }
+    this.props.dispatch(onToast(toastData));
   }
 
   rotateImage(degree) {
@@ -172,10 +165,10 @@ export default class NewPost extends Component {
 
   onPost() {
     if (this.state.photo == '') {
-      Toast.show({ text1: Utils.translate("post.invalid-photo"), type: 'error' },);
+      this.showToast(Utils.translate("post.invalid-photo"));
       return;
     } else if (this.state.content == "") {
-      Toast.show({ text1: Utils.translate("post.invalid-content"), type: 'error' },);
+      this.showToast(Utils.translate("post.invalid-content"));
       return;
     }
     let id = this.state.user.id;
@@ -247,7 +240,15 @@ export default class NewPost extends Component {
             <Text name style={{ flex: 1, marginLeft: 20 }}> {Utils.translate("post.gallery")} </Text>
           </TouchableOpacity>
         </View>
-        <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
       </SafeAreaView>);
   }
 }
+
+const mapStateToProps = (state) => (state);
+const mapDispatchToProps = dispatch => {
+  return {
+    dispatch
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(NewPost);

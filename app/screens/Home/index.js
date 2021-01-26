@@ -28,39 +28,14 @@ import Slider from '@react-native-community/slider';
 import GetLocation from 'react-native-get-location'
 import { getDistance, getPreciseDistance } from 'geolib';
 import Modal from 'react-native-modal';
-import Toast from 'react-native-toast-message';
 
-const toastConfig = {
-  success: ({ text1 }) => (
-    <View
-      style={{
-        paddingHorizontal: 20, justifyContent: 'center', alignItems: 'center', marginTop: 180,
-        height: 50, width: '80%', backgroundColor: EStyleSheet.value('$successColor'), borderRadius: 25
-      }}>
-      <Text style={{ textAlign: 'center', color: EStyleSheet.value('$blackColor'), fontSize: 16, fontWeight: 'bold', }}>{text1}</Text>
-    </View>
-  ),
-  error: ({ text1 }) => (
-    <View
-      style={{
-        paddingHorizontal: 20, justifyContent: 'center', alignItems: 'center',
-        height: 50, width: '80%', backgroundColor: EStyleSheet.value('$errorColor'), borderRadius: 25, marginTop: 180,
-      }}>
-      <Text style={{ textAlign: 'center', color: EStyleSheet.value('$whiteColor'), fontSize: 16, fontWeight: 'bold' }}>{text1}</Text>
-    </View>
-  ),
-  chat: ({ text1, text2 }) => (
-    <View
-      style={{
-        paddingHorizontal: 20, justifyContent: 'center', marginTop: 50,
-        height: 50, width: '80%', backgroundColor: EStyleSheet.value('$successColor'), borderRadius: 5,
-        flexDirection: 'column'
-      }}>
-      <Text style={{ color: EStyleSheet.value('$blackColor'), fontSize: 14, fontWeight: 'bold', }}>{text1}</Text>
-      <Text style={{ color: EStyleSheet.value('$blackColor'), fontSize: 12 }}>{text2}</Text>
-    </View>
-  ),
+const onToast = data => {
+  return {
+    type: actionTypes.PREF_TOAST,
+    data
+  };
 };
+
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -94,11 +69,6 @@ class Home extends Component {
     this.listener = EventRegister.addEventListener('notification', (data) => {
       let type = data._data.type;
       if (type == "new-message") {
-        let text = data._data.text;
-        let name = data._data.name;
-        Toast.show({ text1: name, text2:text, type: 'chat' },);
-        return;
-
       } else if (type == "new-pros") {
       }
     })
@@ -113,6 +83,17 @@ class Home extends Component {
 
     }
   }
+
+
+  showToast(text1) {
+    let toastData = {
+      text1: text1,
+      text2: null,
+      type: 'error',
+    }
+    this.props.dispatch(onToast(toastData));
+  }
+
 
   getLocation() {
     GetLocation.getCurrentPosition({
@@ -248,7 +229,7 @@ class Home extends Component {
         .then(response => {
           let room = response.data;
           if (room.active == 0) {
-            Toast.show({ text1: "You can't make this chat.", type: 'error' },);
+            this.showToast("You can't make this chat.");
             return;
           }
           return this.props.navigation.navigate("Chat", { room });
@@ -407,7 +388,6 @@ class Home extends Component {
               {Utils.translate('messages.close')}</Button>
           </View>
         </Modal>
-        <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
       </SafeAreaView>
     );
   }

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { View, TextInput, Image, SafeAreaView, ScrollView, TouchableOpacity, Linking, Alert} from "react-native";
+import { View, TextInput, Image, SafeAreaView, ScrollView, TouchableOpacity, Linking, Alert } from "react-native";
 import { BaseStyle, Images, BaseConfig } from "@config";
 import * as Utils from "@utils";
 import styles from "./styles";
@@ -9,34 +9,18 @@ import { Text, Button } from "@components";
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { apiActions, actionTypes } from "@actions";
 import CheckBox from '@react-native-community/checkbox';
-import RNRestart from 'react-native-restart'; 
-import Toast from 'react-native-toast-message';
-
-const toastConfig = {
-  success: () => {},
-  error: ({text1}) => (
-    <View
-      style={{ paddingHorizontal: 20, justifyContent: 'center', alignItems:'center', 
-      height: 50, width: '80%', backgroundColor: EStyleSheet.value('$errorColor'), borderRadius: 25 }}>
-      <Text style={{textAlign:'center', color: EStyleSheet.value('$whiteColor'), fontSize:16, fontWeight:'bold' }}>{text1}</Text>
-    </View>
-  ),
-  chat: ({ text1, text2 }) => (
-    <View
-      style={{
-        paddingHorizontal: 20, justifyContent: 'center', marginTop: 50,
-        height: 50, width: '80%', backgroundColor: EStyleSheet.value('$successColor'), borderRadius: 5,
-        flexDirection: 'column'
-      }}>
-      <Text style={{ color: EStyleSheet.value('$blackColor'), fontSize: 14, fontWeight: 'bold', }}>{text1}</Text>
-      <Text style={{ color: EStyleSheet.value('$blackColor'), fontSize: 12 }}>{text2}</Text>
-    </View>
-  ),
-};
+import RNRestart from 'react-native-restart';
 
 const onLogin = data => {
   return {
     type: actionTypes.LOGIN,
+    data
+  };
+};
+
+const onToast = data => {
+  return {
+    type: actionTypes.PREF_TOAST,
     data
   };
 };
@@ -49,7 +33,7 @@ class SignIn extends Component {
       errMsg: Utils.translate("messages.login-failed-msg"),
       email: BaseConfig.debugging ? "bognarvojislav791@gmail.com" : '',
       password: BaseConfig.debugging ? "123456" : '',
-      agree :false,
+      agree: false,
       success: {
         email: true,
         password: true
@@ -58,34 +42,43 @@ class SignIn extends Component {
     };
 
   }
-   onLogin()  {
-    const { navigation } = this.props;
-    let {email, password, success, agree} = this.state;
-    if(!agree){
-      Toast.show({ text1: Utils.translate("auth.invalid-agree"), type: 'error'},);
-      return;
-    }else if(!Utils.EMAIL_VALIDATE.test(String(email).toLowerCase())) {
-      this.setState({ success: {  ...success, email: false} });
-      Toast.show({ text1: Utils.translate("Account.invalid-email"), type: 'error'},);
 
+  showToast(text1) {
+    let toastData = {
+      text1: text1,
+      text2: null,
+      type: 'error',
+    }
+    this.props.dispatch(onToast(toastData));
+  }
+
+  onLogin() {
+    const { navigation } = this.props;
+    let { email, password, success, agree } = this.state;
+    if (!agree) {
+      this.showToast(Utils.translate("auth.invalid-agree"));
       return;
-    } else if(password == ""){
-      this.setState({ success: {  ...success, email: false} });
-      Toast.show({ text1: Utils.translate("Account.invalid-password"), type: 'error'},);
+    } else if (!Utils.EMAIL_VALIDATE.test(String(email).toLowerCase())) {
+      this.setState({ success: { ...success, email: false } });
+      this.showToast(Utils.translate("Account.invalid-email"));
+      return;
+    } else if (password == "") {
+      this.setState({ success: { ...success, email: false } });
+      this.showToast(Utils.translate("Account.invalid-password"));
       return;
     }
 
-    if(this.mounted){
+    if (this.mounted) {
       this.setState({
-        loading:true
-      }, ()=>{
+        loading: true
+      }, () => {
         apiActions.login(this.state)
-          .then(response=>  {
+          .then(response => {
             const data = {
               success: true,
               data: {},
             };
-  
+
             data.data = response.data;
             data.data.user.password = password;
             this.props.dispatch(onLogin(data))
@@ -96,9 +89,9 @@ class SignIn extends Component {
               }
             }, 500);
           })
-          .catch(err =>{
+          .catch(err => {
             console.log(err);
-            Toast.show({ text1: err.message, type: 'error'},);
+            this.showToast(err.message);
           })
           .finally(
             () => this.setState({ loading: false })
@@ -107,27 +100,27 @@ class SignIn extends Component {
     }
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.mounted = true;
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     this.mounted = false;
   }
 
-  onSingUp(){
+  onSingUp() {
     return this.props.navigation.navigate("SignUp");
   }
 
-  onSupport(){
+  onSupport() {
     Linking.openURL(`mailto:info@boldo.ca`)
   }
 
-  onForget(){
+  onForget() {
     Linking.openURL(`mailto:info@boldo.ca?subject=Forgot Password`)
   }
 
-  onTerms(){
+  onTerms() {
     Linking.openURL(`http://54.163.177.131/terms`)
   }
 
@@ -140,7 +133,7 @@ class SignIn extends Component {
       >
         <ScrollView >
           <View style={styles.logo}>
-            <Image resizeMode={"contain"} style={{ height:80}} source={Images.logo} />
+            <Image resizeMode={"contain"} style={{ height: 80 }} source={Images.logo} />
           </View>
           <View style={styles.contain}>
             <Text name style={styles.signEmail}> {Utils.translate("Account.email")} </Text>
@@ -190,43 +183,43 @@ class SignIn extends Component {
               value={password}
               selectionColor={EStyleSheet.value('$primaryColor')}
             />
-            <View style={{alignItems:'flex-end', marginTop:10, width:'100%'}}>
-              <TouchableOpacity onPress={() => {this.onForget();}}>
+            <View style={{ alignItems: 'flex-end', marginTop: 10, width: '100%' }}>
+              <TouchableOpacity onPress={() => { this.onForget(); }}>
                 <Text common> {Utils.translate("auth.forget-password")}</Text>
               </TouchableOpacity>
             </View>
 
-            <View style={{alignItems: "center", display:'flex', flexDirection: "column", justifyContent:'center'}}>
-              <View style={{flexDirection: "row"}}>
+            <View style={{ alignItems: "center", display: 'flex', flexDirection: "column", justifyContent: 'center' }}>
+              <View style={{ flexDirection: "row" }}>
                 <CheckBox
                   value={agree}
                   onValueChange={agree => this.setState({ agree })}
-                  style={{alignSelf: "center",}}
-                  tintColors={{true:EStyleSheet.value('$primaryColor'), false:EStyleSheet.value('$primaryColor')}}
+                  style={{ alignSelf: "center", }}
+                  tintColors={{ true: EStyleSheet.value('$primaryColor'), false: EStyleSheet.value('$primaryColor') }}
                 />
-                <Text common style={{margin:8}}> {Utils.translate("auth.have-read")}</Text>
+                <Text common style={{ margin: 8 }}> {Utils.translate("auth.have-read")}</Text>
               </View>
-              <TouchableOpacity onPress={() => {this.onTerms();}}>
-                  <Text primaryColor common style={{textDecorationLine: 'underline'}}>{Utils.translate("auth.terms")}</Text>
+              <TouchableOpacity onPress={() => { this.onTerms(); }}>
+                <Text primaryColor common style={{ textDecorationLine: 'underline' }}>{Utils.translate("auth.terms")}</Text>
               </TouchableOpacity>
             </View>
-            <View style={{ width: "100%", marginTop: 30}}>
+            <View style={{ width: "100%", marginTop: 30 }}>
               <Button
                 full
                 loading={loading}
                 onPress={() => {
-                  if(!loading)
+                  if (!loading)
                     this.onLogin();
                 }}
               >
                 {Utils.translate("auth.sign-in")}
               </Button>
             </View>
-            <View style={{ width: "100%", marginTop: 10}}>
+            <View style={{ width: "100%", marginTop: 10 }}>
               <Button
                 outline
                 onPress={() => {
-                  if(!loading)
+                  if (!loading)
                     this.onSingUp();
                 }}
               >
@@ -234,24 +227,25 @@ class SignIn extends Component {
               </Button>
             </View>
           </View>
-          <TouchableOpacity onPress={() => {this.onSupport();}} style={{marginTop:10}}>
-            <View style={{  flex: 1, 
-                alignItems: 'center',
-                justifyContent: 'center'}}>
+          <TouchableOpacity onPress={() => { this.onSupport(); }} style={{ marginTop: 10 }}>
+            <View style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
               <Text common blackColor> {Utils.translate("auth.support")} </Text>
             </View>
           </TouchableOpacity>
         </ScrollView>
-        <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
       </SafeAreaView>
     );
   }
 }
-
+const mapStateToProps = (state) => (state);
 const mapDispatchToProps = dispatch => {
   return {
     dispatch
   };
 };
 
-export default connect(null, mapDispatchToProps)(SignIn);
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);

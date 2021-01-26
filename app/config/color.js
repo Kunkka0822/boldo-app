@@ -13,9 +13,13 @@ let BaseColor = {
   '$inputBoderColor' : "#E0E0E1",
   '$successColor' : "#AFF4CC",
   '$errorColor': "#EB5757",
+  '$warningColor': "#ff9933",
   '$scrollColor': "#E5E5E5",
   '$accountBorderColor':'#F9F9F9',
   
+
+
+
   '$secondaryPrimaryColor': "#01BC63",
   '$tagColor': "#e8f2fe",
   '$pendingColor' : 'rgba(32, 130, 246, 0.1)',
@@ -35,8 +39,6 @@ let BaseColor = {
   '$whiteOpacity': "#ffffffd8",
   '$transparent': "#0000",
   '$success': "#4da6ff",
-  '$danger': "#d93636",
-  '$warning': "#ff9933",
   '$setDarkMode': "#292929",
   '$setWallet': "#8A55FB",
   '$setStories': "#F62B50",

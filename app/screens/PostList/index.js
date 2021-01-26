@@ -15,7 +15,6 @@ import OptionsMenu from "react-native-option-menu";
 import Modal from 'react-native-modal';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { connect } from "react-redux";
-import Toast from 'react-native-toast-message';
 import Textarea from 'react-native-textarea';
 
 const onNotification = data => {
@@ -25,36 +24,11 @@ const onNotification = data => {
     };
 };
 
-const toastConfig = {
-    success: ({ text1 }) => (
-        <View
-            style={{
-                paddingHorizontal: 20, justifyContent: 'center', alignItems: 'center', marginTop: 80,
-                height: 50, width: '80%', backgroundColor: EStyleSheet.value('$successColor'), borderRadius: 25
-            }}>
-            <Text style={{ textAlign: 'center', color: EStyleSheet.value('$blackColor'), fontSize: 16, fontWeight: 'bold', }}>{text1}</Text>
-        </View>
-    ),
-    error: ({ text1 }) => (
-        <View
-            style={{
-                paddingHorizontal: 20, justifyContent: 'center', alignItems: 'center',
-                height: 50, width: '80%', backgroundColor: EStyleSheet.value('$errorColor'), borderRadius: 25, marginTop: 80,
-            }}>
-            <Text style={{ textAlign: 'center', color: EStyleSheet.value('$whiteColor'), fontSize: 16, fontWeight: 'bold' }}>{text1}</Text>
-        </View>
-    ),
-    chat: ({text1, text2}) => (
-        <View
-            style={{
-                paddingHorizontal: 20, justifyContent: 'center',  marginTop: 50,
-                height: 50, width: '80%', backgroundColor: EStyleSheet.value('$successColor'), borderRadius: 5,
-                flexDirection:'column'
-            }}>
-            <Text style={{color: EStyleSheet.value('$blackColor'), fontSize: 14, fontWeight: 'bold', }}>{text1}</Text>
-            <Text style={{color: EStyleSheet.value('$blackColor'), fontSize: 12}}>{text2}</Text>
-    </View>
-    ),
+const onToast = data => {
+    return {
+        type: actionTypes.PREF_TOAST,
+        data
+    };
 };
 
 class PostList extends Component {
@@ -77,14 +51,20 @@ class PostList extends Component {
         this.focusNotification = this.props.navigation.addListener('focus', this.manageBadge.bind(this));
     }
 
+    showToast(text1) {
+        let toastData = {
+            text1: text1,
+            text2: null,
+            type: 'error',
+        }
+        this.props.dispatch(onToast(toastData));
+    }
+
     componentDidMount() {
         this.getPosts();
         this.listener = EventRegister.addEventListener('notification', (data) => {
             let type = data._data.type;
             if (type == "new-message") {
-                let text = data._data.text;
-                let name = data._data.name;
-                Toast.show({text1: name, text2:text, type: 'chat'},);
             } else if (type == "new-post") {
                 this.getPosts();
             }
@@ -209,7 +189,7 @@ class PostList extends Component {
                 .then(response => {
                     let room = response.data;
                     if (room.active == 0) {
-                        Toast.show({ text1: "You can't make this chat.", type: 'error' },);
+                        this.showToast("You can't make this chat.");
                         return;
                     }
                     return this.props.navigation.navigate("Chat", { room });
@@ -243,8 +223,8 @@ class PostList extends Component {
             showReport: !showReport,
             errorReason: true,
         })
-        Toast.show({ text1: "We will reivew this post soon.\nThanks for your reporting.", type: 'success' },);
-
+        this.showToast("We will reivew this post soon.\nThanks for your reporting.");
+        
         let user_id = this.state.user.id;
         const model = {
             id: this.state.reportItem.id,
@@ -384,7 +364,6 @@ class PostList extends Component {
                             {Utils.translate('messages.close')}</Button>
                     </View>
                 </Modal>
-                <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
             </SafeAreaView>);
     }
 }

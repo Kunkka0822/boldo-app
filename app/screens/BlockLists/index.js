@@ -13,7 +13,6 @@ import Carousel, { ParallaxImage } from 'react-native-snap-carousel';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Dialog from "react-native-dialog";
 import { EventRegister } from 'react-native-event-listeners'
-import Toast from 'react-native-toast-message';
 import Textarea from 'react-native-textarea';
 import { connect } from "react-redux";
 
@@ -31,7 +30,6 @@ class BlockLists extends Component {
     componentDidMount() {
         this.listener = EventRegister.addEventListener('notification', (data) => {
             if (data == "new-message") {
-                console.log("new message received");
             }
         })
         this.getBlocks();

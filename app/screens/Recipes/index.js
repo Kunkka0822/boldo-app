@@ -14,7 +14,6 @@ import { EventRegister } from 'react-native-event-listeners'
 import Modal from 'react-native-modal';
 import MessageToast, { BaseToast } from 'react-native-toast-message';
 import { connect } from "react-redux";
-import Toast from 'react-native-toast-message';
 import Textarea from 'react-native-textarea';
 
 const onNotification = data => {
@@ -24,38 +23,6 @@ const onNotification = data => {
     };
 };
 const { width: screenWidth } = Dimensions.get('window')
-
-const toastConfig = {
-    success: ({ text1 }) => (
-        <View
-            style={{
-                paddingHorizontal: 20, justifyContent: 'center', alignItems: 'center', marginTop: 80,
-                height: 50, width: '80%', backgroundColor: EStyleSheet.value('$successColor'), borderRadius: 25
-            }}>
-            <Text style={{ textAlign: 'center', color: EStyleSheet.value('$blackColor'), fontSize: 16, fontWeight: 'bold', }}>{text1}</Text>
-        </View>
-    ),
-    error: ({ text1 }) => (
-        <View
-            style={{
-                paddingHorizontal: 20, justifyContent: 'center', alignItems: 'center',
-                height: 50, width: '80%', backgroundColor: EStyleSheet.value('$errorColor'), borderRadius: 25, marginTop: 80,
-            }}>
-            <Text style={{ textAlign: 'center', color: EStyleSheet.value('$whiteColor'), fontSize: 16, fontWeight: 'bold' }}>{text1}</Text>
-        </View>
-    ),
-    chat: ({ text1, text2 }) => (
-        <View
-          style={{
-            paddingHorizontal: 20, justifyContent: 'center', marginTop: 50,
-            height: 50, width: '80%', backgroundColor: EStyleSheet.value('$successColor'), borderRadius: 5,
-            flexDirection: 'column'
-          }}>
-          <Text style={{ color: EStyleSheet.value('$blackColor'), fontSize: 14, fontWeight: 'bold', }}>{text1}</Text>
-          <Text style={{ color: EStyleSheet.value('$blackColor'), fontSize: 12 }}>{text2}</Text>
-        </View>
-      ),
-};
 
 class Recipes extends Component {
     constructor(props) {

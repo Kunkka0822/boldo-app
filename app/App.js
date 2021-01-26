@@ -16,6 +16,8 @@ import * as Utils from "@utils";
 import { AppearanceProvider, useColorScheme} from 'react-native-appearance'
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Navigaion from "./navigation";
+import {CustomPushAlert} from "@components";
+
 
 LogBox.ignoreAllLogs(true)
 const PREF_THEME = 'theme';
@@ -35,6 +37,7 @@ class App extends Component {
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor} >
             <Navigaion theme={this.props.colorScheme} />
+            <CustomPushAlert/>
           </PersistGate>
         </Provider>
       </AppearanceProvider>
