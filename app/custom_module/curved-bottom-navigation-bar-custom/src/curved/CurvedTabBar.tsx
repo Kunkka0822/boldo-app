@@ -25,6 +25,7 @@ const CurvedTabBarComponent = (props: TabBarViewProps) => {
         dotSize: SIZE_DOT,
         barHeight: TAB_BAR_HEIGHT,
         holeHeight: HEIGHT_HOLE,
+        labels,
         duration,
         dotColor,
         tabBarColor } = props;
@@ -102,12 +103,13 @@ const CurvedTabBarComponent = (props: TabBarViewProps) => {
                 </AnimatedSvg>
             </View>
             <View style={rowTab} >
-                <Dot dotColor={dotColor} dotSize={SIZE_DOT} barHeight={TAB_BAR_HEIGHT} holeHeight={HEIGHT_HOLE} width={width} selectedIndex={indexAnimated} routes={routes} progress={progress} />
+                <Dot labels={labels} dotColor={dotColor} dotSize={SIZE_DOT} barHeight={TAB_BAR_HEIGHT} holeHeight={HEIGHT_HOLE} width={width} selectedIndex={indexAnimated} routes={routes} progress={progress} />
                 {routes.map(({ key, ...configs }, index) => {
                     return <ButtonTabItem
                         width={width}
                         key={key}
                         clock={clock}
+                        labels={labels}
                         indexAnimated={indexAnimated}
                         countTab={routes.length}
                         selectedIndex={selectedIndex}

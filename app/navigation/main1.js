@@ -8,7 +8,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AnimatedTabBar, { TabsConfigsType } from '../custom_module/curved-bottom-navigation-bar-custom';
 import { connect } from "react-redux";
 import { Badge } from 'react-native-paper';
-import { Image, View, ImageBackground } from 'react-native';
+import { Image, View, ImageBackground, Text } from 'react-native';
 import { Images } from "@config";
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { store } from "@store";
@@ -28,11 +28,11 @@ const Stack = createStackNavigator();
 
 
 const renderIcon = (props) => {
-  const { notification, name, image} = props;
+  const { notification, key, image } = props;
   return (
-    <View style={{ width: 40, height: 40, justifyContent: 'center', alignItems: 'center' }}>
-      {notification?.notifications?.[image] > 0 && <Badge style={{ position: 'absolute', top: 4, right: 4, zIndex: 10 }}>{notification?.notifications?.[image]}</Badge>}
-      <Image source={name} style={{ width: 20, height: 20, resizeMode: 'contain' }} />
+    <View style={{alignItems: 'center' }}>
+      {notification?.notifications?.[key] > 0 && <Badge style={{ position: 'absolute', top: 4, right: 4, zIndex: 10 }}>{notification?.notifications?.[image]}</Badge>}
+      <Image source={image} style={{ width: 20, height: 20, resizeMode: 'contain' }} />
     </View>
   )
 }
@@ -42,28 +42,29 @@ const IconComponent = connect(mapStateToProps, null)(renderIcon);
 
 const tabs = {
   Home: {
-    icon: ({ progress }) => <Image source={Images.home} style={{ width: 20, height: 20, resizeMode: 'contain' }} />
+    icon: ({ progress }) => <IconComponent image={Images.home} key={"home"} />
   },
   PostList: {
-    icon: ({ progress }) => <IconComponent name={Images.post} image={"posts"}/>
+    icon: ({ progress }) => <IconComponent image={Images.post} key={"posts"} />
   },
   Recipes: {
-    icon: ({ progress }) => <IconComponent name={Images.chef} image={"recipes"}/>
+    icon: ({ progress }) => <IconComponent image={Images.chef} key={"recipes"} />
   },
   Address: {
-    icon: ({ progress }) => <IconComponent name={Images.chat} image={"chats"}/>
+    icon: ({ progress }) => <IconComponent image={Images.chat} key={"chats"} />
   },
   Profile: {
-    icon: ({ progress }) => <Image source={Images.profile} style={{ width: 20, height: 20, resizeMode: 'contain' }} />
+    icon: ({ progress }) => <IconComponent image={Images.profile} key={"profile"} />
   },
 }
+const labels = ["Home", "Posts", "Recipes", "Chats", "Profile"]
 
 const TabNavigator = () => {
   const user = store.getState().auth?.login?.data?.user;
   return (
     <Tab.Navigator
       tabBar={props => (
-        <AnimatedTabBar barHeight={40} holeHeight={30} dotSize={40} barColor={EStyleSheet.value('$primaryColor')} dotColor={EStyleSheet.value('$primaryColor')} tabs={tabs} {...props} />
+        <AnimatedTabBar labels={labels} barHeight={40} holeHeight={30} dotSize={40} barColor={EStyleSheet.value('$primaryColor')} dotColor={EStyleSheet.value('$primaryColor')} tabs={tabs} {...props} />
       )}
     >
       <Tab.Screen name="Home" component={Home} />

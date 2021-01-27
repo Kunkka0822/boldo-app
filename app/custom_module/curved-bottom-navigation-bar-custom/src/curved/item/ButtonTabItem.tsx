@@ -1,5 +1,5 @@
 import React, { memo, useMemo, useCallback } from 'react'
-import { View, ViewStyle, StyleProp } from 'react-native'
+import { View, ViewStyle, StyleProp, Text } from 'react-native'
 import equals from 'react-fast-compare'
 import { styles } from './style'
 import { createNativeWrapper, TouchableOpacity, State } from 'react-native-gesture-handler';
@@ -18,7 +18,7 @@ const gestureHandler = (state: Animated.Value<State>) =>
     onGestureEvent({ state });
 
 const ButtonTabItemComponent = (props: TabBarItemProps) => {
-    const { index, selectedIndex, countTab, indexAnimated, width, icon, clock } = props;
+    const { index, selectedIndex, countTab, indexAnimated, width, icon, clock, labels } = props;
     const isActive = eq(round(indexAnimated), index)
     const progress = withTimingTransition(isActive, { duration: 200 })
     const [state] = useValues(State.UNDETERMINED);
@@ -33,7 +33,6 @@ const ButtonTabItemComponent = (props: TabBarItemProps) => {
     );
     // style
     const containerIconStyle = [{
-
         opacity: interpolate(progress, {
             inputRange: [0, 1],
             outputRange: [1, 0]
@@ -43,7 +42,10 @@ const ButtonTabItemComponent = (props: TabBarItemProps) => {
                 inputRange: [0, 1],
                 outputRange: [0, 50]
             })
-        }]
+        }],
+        justifyContent: 'center', 
+        alignItems:'center',
+        marginTop:4
     }
     ] as StyleProp<Animated.AnimateStyle<ViewStyle>>;
     const buttonTab = useMemo<StyleProp<ViewStyle>>(() => [
@@ -65,6 +67,7 @@ const ButtonTabItemComponent = (props: TabBarItemProps) => {
             <View style={buttonTab}>
                 <Animated.View style={containerIconStyle}>
                     {renderIcon()}
+                    <Text style={{fontSize:12, color:'white', fontWeight:'bold'}}>{labels[index]}</Text>
                 </Animated.View>
             </View>
         </AnimatedRawButton>

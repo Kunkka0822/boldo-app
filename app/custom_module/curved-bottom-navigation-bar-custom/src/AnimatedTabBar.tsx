@@ -27,6 +27,7 @@ interface AnimatedTabBarProps
   dotColor?: string;
   barHeight?: number;
   holeHeight?: number;
+  labels : string[];
 }
 
 export const AnimatedTabBar = (props: AnimatedTabBarProps) => {
@@ -41,6 +42,7 @@ export const AnimatedTabBar = (props: AnimatedTabBarProps) => {
     dotColor = TAB_BAR_COLOR,
     barHeight =  TAB_BAR_HEIGHT,
     holeHeight = HEIGHT_HOLE,
+    labels
   } = props;
 
   // variables
@@ -159,6 +161,7 @@ export const AnimatedTabBar = (props: AnimatedTabBarProps) => {
       routes={getRoutes()}
       duration={duration}
       holeHeight={holeHeight}
+      labels={labels}
     />
   );
 };

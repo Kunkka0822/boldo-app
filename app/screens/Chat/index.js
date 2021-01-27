@@ -115,7 +115,6 @@ class Chat extends Component {
             room_id: this.room.id,
             user_id: this.state.user.id,
         }
-        console.log(model);
         apiActions.readAll(model)
             .then(response => {
             })
@@ -132,7 +131,6 @@ class Chat extends Component {
             room_id: this.room.id,
             page: this.page
         }
-        console.log("page", this.page);
         this.setState({
             loading: true
         }, () => {
@@ -176,7 +174,6 @@ class Chat extends Component {
                 console.log("here3");
             } else {
                 console.log("here4");
-                console.log(response);
                 this.uploadChatImages(response.base64);
             }
         });
@@ -252,7 +249,6 @@ class Chat extends Component {
         }
         apiActions.removePhoto(model)
             .then(response => {
-                console.log("response");
             })
             .catch(err => {
                 console.log("error");

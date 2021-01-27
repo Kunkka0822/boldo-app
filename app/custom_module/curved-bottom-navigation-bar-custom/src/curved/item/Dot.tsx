@@ -5,7 +5,7 @@ import { styles } from './style'
 import { DotProps } from '../../types'
 import { IconDot } from './IconDot'
 // import { holeHeight } from '../constant'
-import { StyleProp, ViewStyle } from 'react-native'
+import { StyleProp, ViewStyle, Text } from 'react-native'
 
 
 const DotComponent = (props: DotProps) => {

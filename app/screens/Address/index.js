@@ -126,8 +126,6 @@ class Address extends Component {
                     })
                 })
                 .catch(err => {
-                    console.log('err');
-                    console.log(err);
                 })
                 .finally(
                     () => this.setState({ loading: false })

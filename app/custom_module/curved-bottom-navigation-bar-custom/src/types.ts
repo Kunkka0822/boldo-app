@@ -51,7 +51,7 @@ export interface TabBarViewProps
 
     barHeight: number;
     holeHeight: number;
-
+    labels : string[];
 }
 
 export interface TabBarItemProps extends TabConfigsType {
@@ -69,6 +69,8 @@ export interface TabBarItemProps extends TabConfigsType {
     clock:Animated.Clock;
 
     width: number;
+
+    labels : string[];
 }
 export interface DotProps {
     /**
@@ -92,4 +94,5 @@ export interface DotProps {
 
     barHeight: number;
     holeHeight: number;
+    labels : string[];
 }
