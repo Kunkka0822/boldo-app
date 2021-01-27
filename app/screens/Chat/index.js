@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { View, SafeAreaView, ScrollView, TouchableOpacity, Image, FlatList, RefreshControl, ActivityIndicator } from "react-native";
+import { View, SafeAreaView, ScrollView, TouchableOpacity, Image, FlatList, RefreshControl, ActivityIndicator , Platform} from "react-native";
 import { BaseStyle, Images, BaseConfig, firebaseSvc } from "@config";
 import { Button, Icon, Text } from "@components";
 import * as Utils from "@utils";
@@ -169,9 +169,14 @@ class Chat extends Component {
         };
         launchImageLibrary(options, (response) => {
             if (response.didCancel) {
+                console.log("here1");
             } else if (response.error) {
+                console.log("here2");
             } else if (response.customButton) {
+                console.log("here3");
             } else {
+                console.log("here4");
+                console.log(response);
                 this.uploadChatImages(response.base64);
             }
         });
@@ -179,7 +184,7 @@ class Chat extends Component {
 
     renderActions() {
         return (
-            <TouchableOpacity style={{ height: '100%', justifyContent: 'center' }} onPress={() => { this.selectImage() }}>
+            <TouchableOpacity onPress={() => { this.selectImage() }}>
                 <Icon name="image" style={{ marginLeft: 10 }} size={30} color={EStyleSheet.value("$primaryColor")}></Icon>
             </TouchableOpacity>
         );
@@ -288,7 +293,7 @@ class Chat extends Component {
                 style={[BaseStyle.safeAreaView, { backgroundColor: EStyleSheet.value('$contentColor') }]}
                 forceInset={{ top: "always" }}
             >
-                <View style={{ flexDirection: 'row', alignItems: 'center', padding: 20, backgroundColor: EStyleSheet.value('$primaryColor') }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', padding: Platform.OS == 'ios' ?30:20, backgroundColor: EStyleSheet.value('$primaryColor') }}>
                     <TouchableOpacity onPress={() => { this.onClose() }}>
                         <Icon name="arrow-left" size={20} color={EStyleSheet.value("$whiteColor")}></Icon>
                     </TouchableOpacity>

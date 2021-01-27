@@ -99,10 +99,10 @@ class BlockLists extends Component {
         let { loading, rooms, user} = this.state;
         return (
             <SafeAreaView
-                style={[BaseStyle.safeAreaView, { paddingHorizontal: 10, paddingTop: 20 }]}
+                style={[BaseStyle.safeAreaView]}
                 forceInset={{ top: "always" }}
             >
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom:10 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom:10, paddingHorizontal:10, paddingTop:20}}>
                     <TouchableOpacity onPress={() => { this.onClose() }}>
                         <Image source={Images.back} style={{ width: 20, height: 20, resizeMode: 'cover' }} ></Image>
                     </TouchableOpacity>

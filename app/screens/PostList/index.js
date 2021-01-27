@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { View, SafeAreaView, ScrollView, TouchableOpacity, Image, FlatList, RefreshControl } from "react-native";
+import { View, SafeAreaView, ScrollView, TouchableOpacity, Image, FlatList, RefreshControl, Platform} from "react-native";
 import { BaseStyle, Images, BaseConfig } from "@config";
 import { Button, Icon, Text } from "@components";
 import * as Utils from "@utils";
@@ -125,8 +125,8 @@ class PostList extends Component {
             this.setState({ filteredPosts: posts });
         } else {
             filteredPosts = posts.filter(post => post.content.toLowerCase().includes(search.toLowerCase()) ||
-                post.user.lname.toLowerCase().includes(search.toLowerCase()) ||
-                post.user.fname.toLowerCase().includes(search.toLowerCase()));
+                (post.user.fname + " " + post.user.lname).toLowerCase().includes(search.toLowerCase())  );
+               
             this.setState({ filteredPosts: filteredPosts });
         }
     };
@@ -310,7 +310,7 @@ class PostList extends Component {
                     }
                 </ScrollView>
                 {user.role == 1 && <TouchableOpacity
-                    style={{ alignItems: 'flex-end', width: 40, position: 'absolute', right: 10, bottom: 40 }}
+                    style={{ alignItems: 'flex-end', width: 40, position: 'absolute', right: 10, bottom: Platform.OS == 'ios' ? 70 : 40 }}
                     onPress={() => { this.onPlus() }}
                 >
                     <View style={{

@@ -220,7 +220,7 @@ class Setting extends Component {
         let { loading, user, type_items, style_items } = this.state;
         return (
             <SafeAreaView
-                style={[BaseStyle.safeAreaView, { paddingHorizontal: 10, }]}
+                style={[BaseStyle.safeAreaView]}
                 forceInset={{ top: "always" }}
             >
                 <View style={{ flexDirection: "row", width: "100%", justifyContent: "center", alignItems: "center", marginTop: 20, paddingHorizontal: 20 }}>

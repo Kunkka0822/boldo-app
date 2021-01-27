@@ -66,6 +66,7 @@ class Home extends Component {
     styles[0].children.push({ id: 100000, name: 'All' });
     this.setState({ style_items: styles });
     this.getPros();
+    this.getLocation();
     this.listener = EventRegister.addEventListener('notification', (data) => {
       let type = data._data.type;
       if (type == "new-message") {

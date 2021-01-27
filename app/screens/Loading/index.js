@@ -4,12 +4,13 @@ import styles from "./styles";
 import { store } from "@store";
 import RNRestart from 'react-native-restart';
 import * as Progress from 'react-native-progress';
-import { ActivityIndicator, View, Image } from "react-native";
+import { ActivityIndicator, View, Image, Platform } from "react-native";
 import { Images } from "@config";
 import { apiActions, actionTypes } from "@actions";
 import { connect } from "react-redux";
 import { notifications } from "react-native-firebase-push-notifications"
 import { EventRegister } from 'react-native-event-listeners'
+
 
 const onTypes = data => {
   return {

@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { View, SafeAreaView, ScrollView, TouchableOpacity, Image, FlatList, RefreshControl, Dimensions, } from "react-native";
+import { View, SafeAreaView, ScrollView, TouchableOpacity, Image, FlatList, RefreshControl, Dimensions, Platform} from "react-native";
 import { BaseStyle, Images, BaseConfig } from "@config";
 import { Button, Icon, Text } from "@components";
 import * as Utils from "@utils";
@@ -120,7 +120,8 @@ class Recipes extends Component {
 
     updateSearch = (search) => {
         let filteredRecipes = this.state.recipes.filter(x => String(x.title.toLowerCase()).includes(search.toLowerCase()) ||
-            String(x.content.toLowerCase()).includes(content.toLowerCase()));
+            String(x.content.toLowerCase()).includes(search.toLowerCase()) || 
+            (x.user.fname + " " + x.user.lname).toLowerCase().includes(search.toLowerCase()) );
         this.setState({
             filteredRecipes: filteredRecipes,
             search
@@ -216,7 +217,7 @@ class Recipes extends Component {
                     />
                 </ScrollView>
                 {user.role == 1 && <TouchableOpacity
-                    style={{ alignItems: 'flex-end', width: 40, position: 'absolute', right: 10, bottom: 40 }}
+                    style={{ alignItems: 'flex-end', width: 40, position: 'absolute', right: 10, bottom: Platform.OS == 'ios' ? 70 : 40  }}
                     onPress={() => { this.onUploadRecipe() }}
                 >
                     <View style={{

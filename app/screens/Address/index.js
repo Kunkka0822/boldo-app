@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { View, SafeAreaView, ScrollView, TouchableOpacity, Image, FlatList, RefreshControl, Dimensions } from "react-native";
+import { View, SafeAreaView, ScrollView, TouchableOpacity, Image, FlatList, RefreshControl, Dimensions, Platform} from "react-native";
 import { BaseStyle, Images, BaseConfig, firebaseSvc } from "@config";
 import { Button, Icon, Text } from "@components";
 import * as Utils from "@utils";
@@ -140,10 +140,10 @@ class Address extends Component {
         let { loading, user, contacts, filteredContacts } = this.state;
         return (
             <SafeAreaView
-                style={[BaseStyle.safeAreaView, { paddingHorizontal: 10, paddingTop: 20 }]}
+                style={[BaseStyle.safeAreaVie]}
                 forceInset={{ top: "always" }}
             >
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center',  paddingHorizontal:10, paddingTop:20}}>
                     <Text style={{ fontSize: 20, flex: 1, textAlign: 'center', color: EStyleSheet.value('$textColor') }} > {"Chats"} </Text>
                     <TouchableOpacity onPress={() => { this.onBlocks() }}>
                         <Icon name="lock" size={20} color={EStyleSheet.value("$primaryColor")}></Icon>

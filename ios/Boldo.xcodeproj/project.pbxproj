@@ -771,7 +771,7 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Boldo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 19.0;
+				MARKETING_VERSION = 20.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -796,7 +796,7 @@
 				DEVELOPMENT_TEAM = U9U4C7G257;
 				INFOPLIST_FILE = Boldo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 19.0;
+				MARKETING_VERSION = 20.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

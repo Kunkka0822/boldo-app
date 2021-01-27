@@ -11,4 +11,4 @@ export const firebaseConfig = {
     measurementId: ""
 };
 
-export const SERVER_HOST = PROD_SERVER ?  "http://54.82.150.65" : "http://54.163.177.131";
+export const SERVER_HOST = PROD_SERVER ?  "http://54.82.150.65" : "http://192.168.109.73";
