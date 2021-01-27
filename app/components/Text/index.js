@@ -23,7 +23,6 @@ export default class Index extends Component {
       black,
       //custom color
       primaryColor,
-      numberOfLines,
       //custom
       style
     } = this.props;
@@ -48,7 +47,6 @@ export default class Index extends Component {
           primaryColor && EStyleSheet.flatten({ color: EStyleSheet.value('$primaryColor') }),
           style && style
         ])}
-        numberOfLines={numberOfLines}
       >
         {this.props.children}
       </Text>
@@ -74,7 +72,6 @@ Index.propTypes = {
   black: PropTypes.bool,
   //custon for text color
   primaryColor: PropTypes.bool,
-  numberOfLines: PropTypes.number,
   //custom style
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   children: PropTypes.node // plain text

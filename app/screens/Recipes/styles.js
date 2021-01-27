@@ -58,7 +58,7 @@ export default EStyleSheet.create({
         paddingHorizontal:10,
         bottom:30,
         color:'$whiteColor',
-        fontSize:25, 
+        fontSize:20, 
         fontWeight:'bold'
     }
 });

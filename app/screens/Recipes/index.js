@@ -245,11 +245,10 @@ class Recipes extends Component {
                             </TouchableOpacity>
                         </View>
                         <View style={{ width: '100%', height: '90%' }}>
-                            <Text style={{ fontSize: 20, marginTop: 10, textAlign: 'center', fontWeight: 'bold' }}>{selectedRecipe.title}</Text>
+                            <Text style={{ fontSize: 18, marginTop: 10, textAlign: 'center', fontWeight: 'bold', paddingHorizontal:10 }}>{selectedRecipe.title}</Text>
                             <ScrollView style={{ borderRadius: 10, marginVertical: 10, width: '100%' }}>
-                                <View style={{ alignItems: 'center' }}>
-                                    <Text style={{ fontSize: 16, marginTop: 10, textAlign: 'center' }}>{selectedRecipe.content}</Text>
-                                    <Text style={{ fontSize: 16, marginTop: 10, textAlign: 'center' }}>{selectedRecipe.content}</Text>
+                                <View style={{ alignItems: 'center', paddingHorizontal:10}}>
+                                    <Text style={{ fontSize: 16, marginTop: 10}}>{selectedRecipe.content}</Text>
                                     <Image style={{ width: Dimensions.get('window').width - 60, height: Dimensions.get('window').width - 100, marginTop: 10, borderRadius: 10 }}
                                         source={{ uri: selectedRecipe.photo }} />
                                 </View>

@@ -391,7 +391,7 @@ class Home extends Component {
                 {
                   selectedUser?.histories.map((item, index) => {
                     return (<View>
-                      <Text style={{ textAlign: 'center', paddingHorizontal: 20, marginTop: 20, fontWeight: 'bold', fontSize: 16 }}>Working Histories</Text>
+                      <Text style={{ textAlign: 'center', paddingHorizontal: 20, marginTop: 20, fontWeight: 'bold', fontSize: 16 }}>Working History</Text>
                       <View style={{ borderWidth: 1, borderColor: EStyleSheet.value('$inputBoderColor') }}>
                         <Text style={{ textAlign: 'center', paddingHorizontal: 20, fontSize: 14, color: EStyleSheet.value('$blackColor') }}>Company: {item.company}</Text>
                         <Text style={{ textAlign: 'center', paddingHorizontal: 20, fontSize: 14, color: EStyleSheet.value('$blackColor') }}>Title: {item.title}</Text>
