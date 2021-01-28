@@ -37,7 +37,6 @@ class Chat extends Component {
             loading: false,
             messages: [],
             user: props.auth?.login?.data?.user,
-            photo: '',
             tempPhoto: '',
         };
         this.room = props.route.params.room;
@@ -88,7 +87,7 @@ class Chat extends Component {
         }
         msg[0].user = { _id: this.state.user.id, name: this.state.user.fname, avatar: this.state.user.photo };
         msg[0].image64 = false;
-        if (this.state.photo != '') {
+        if (this.state.tempPhoto != '') {
             msg[0].image = this.state.tempPhoto;
             msg[0].image64 = true;
         }
@@ -173,7 +172,6 @@ class Chat extends Component {
                 console.log("here3");
             } else {
                 this.setState({tempPhoto:response.base64});
-                // this.uploadChatImages(response.base64);
             }
         });
     }
@@ -243,16 +241,6 @@ class Chat extends Component {
 
 
     removePhoto() {
-        // const model = {
-        //     photo: this.state.photo
-        // }
-        // apiActions.removePhoto(model)
-        //     .then(response => {
-        //     })
-        //     .catch(err => {
-        //         console.log("error");
-        //     })
-        // this.setState({ photo: '' });
         this.setState({ tempPhoto: '' });
     }
 
@@ -268,18 +256,6 @@ class Chat extends Component {
             })
             .catch(err => {
             })
-    }
-
-    uploadChatImages(image) {
-        // const model = {
-        //     photo: image,
-        // }
-        // apiActions.uploadChatImages(model)
-        //     .then(response => {
-        //         this.setState({ photo: response.data });
-        //     })
-        //     .catch(err => {
-        //     })
     }
 
     render() {

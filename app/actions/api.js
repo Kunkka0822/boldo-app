@@ -127,10 +127,4 @@ export const getOneMessage = (params) => {
 export const readAll = (params) => {
   return _REQUEST2SERVER(`read_all_message`, params);
 }
-export const uploadChatImages = (params) => {
-  return _REQUEST2SERVER(`upload_chat_image`, params);
-}
-export const removePhoto = (params) => {
-  return _REQUEST2SERVER(`remove_photo`, params);
-}
 
