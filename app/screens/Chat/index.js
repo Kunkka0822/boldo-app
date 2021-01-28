@@ -38,6 +38,8 @@ class Chat extends Component {
             messages: [],
             user: props.auth?.login?.data?.user,
             tempPhoto: '',
+            backPossible : true,
+            text : '',
         };
         this.room = props.route.params.room;
         this.focusChat = this.props.navigation.addListener('focus', this.onLoadEarlier.bind(this));
@@ -80,34 +82,52 @@ class Chat extends Component {
         this.props.navigation.goBack();
     }
 
-    sendChat(msg) {
+    sendChat(params) {
         if (this.room.active != 1) {
             this.showToast("You can't chat with this user.");
             return;
         }
-        msg[0].user = { _id: this.state.user.id, name: this.state.user.fname, avatar: this.state.user.photo };
-        msg[0].image64 = false;
+        
+
+        let msg = {};
+        msg.image64 = false;
+        msg.user = params.user;
+        msg.text = params.text;
+        msg._id = Math.round(Math.random() * new Date().getTime() * Math.random()) ;
+        msg.createdAt =new Date();
         if (this.state.tempPhoto != '') {
-            msg[0].image = this.state.tempPhoto;
-            msg[0].image64 = true;
+            msg.image = this.state.tempPhoto;
+            msg.image64 = true;
+        }else{
+
         }
         const model = {
             room_id: this.room.id,
             user_id: this.state.user.id,
             receive_id: this.room?.user?.id,
-            message: msg[0]
+            message: msg
         }
         this.setState(previousState => ({
-            messages: GiftedChat.append(previousState.messages, msg[0]),
+            messages: GiftedChat.append(previousState.messages, msg),
         }))
-        apiActions.sendMessage(model)
+      
+        this.setState({
+            backPossible: false
+        }, () => {
+            apiActions.sendMessage(model)
             .then(response => {
+
             })
             .catch(err => {
                 this.showToast("You can't chat with this user.");
                 this.room.active = 0;
             })
-        this.setState({ tempPhoto: '' });
+            .finally(
+                () => this.setState({ backPossible: true })
+            )
+        })
+       
+        this.setState({tempPhoto: '', text:""});
     }
 
     readAll() {
@@ -178,7 +198,7 @@ class Chat extends Component {
 
     renderActions() {
         return (
-            <TouchableOpacity onPress={() => { this.selectImage() }}>
+            <TouchableOpacity onPress={() => { this.selectImage() }} style={{alignItems:'center', justifyContent:'center', height:'100%'}}>
                 <Icon name="image" style={{ marginLeft: 10 }} size={30} color={EStyleSheet.value("$primaryColor")}></Icon>
             </TouchableOpacity>
         );
@@ -239,6 +259,14 @@ class Chat extends Component {
         );
     }
 
+    renderSend(param) {
+        return (
+            <TouchableOpacity style={{alignItems:'center', justifyContent:'center', height:'100%', marginRight:5}} onPress={() => { this.sendChat(param) }}>
+               <Text style={{color:EStyleSheet.value('$primaryColor'), fontWeight:'bold', fontSize:15}}>Send</Text>
+            </TouchableOpacity>
+        );
+    }
+
 
     removePhoto() {
         this.setState({ tempPhoto: '' });
@@ -259,15 +287,15 @@ class Chat extends Component {
     }
 
     render() {
-        let { loading, messages, user } = this.state;
+        let { loading, messages, user, backPossible, text } = this.state;
         return (
             <SafeAreaView
                 style={[BaseStyle.safeAreaView, { backgroundColor: EStyleSheet.value('$contentColor') }]}
                 forceInset={{ top: "always" }}
             >
                 <View style={{ flexDirection: 'row', alignItems: 'center', padding: Platform.OS == 'ios' ?30:20, backgroundColor: EStyleSheet.value('$primaryColor') }}>
-                    <TouchableOpacity onPress={() => { this.onClose() }}>
-                        <Icon name="arrow-left" size={20} color={EStyleSheet.value("$whiteColor")}></Icon>
+                    <TouchableOpacity onPress={() => { if(backPossible) this.onClose() }}>
+                        <Icon name="arrow-left" size={20} color={ backPossible?EStyleSheet.value("$whiteColor") : EStyleSheet.value("$grayColor")}></Icon>
                     </TouchableOpacity>
                     <View style={{ flexDirection: 'column', flex: 1, justifyContent: 'center', marginLeft: 20 }}>
                         <Text style={{ color: EStyleSheet.value('$whiteColor'), fontSize: 16, fontWeight: 'bold', }}>
@@ -280,16 +308,19 @@ class Chat extends Component {
                 </View>
                 {loading && <ActivityIndicator size="large" {...styles.loading} />}
                 <GiftedChat
-                    user={{ _id: user.id, avatar: user.photo }}
+                    user={{ _id: user.id, avatar: user.photo, name:user.fname}}
                     messages={messages}
-                    onSend={msg => this.sendChat(msg)}
                     // renderLoading={this.renderLoading.bind(this)}
                     // listViewProps={{ onEndReached: this.onLoadEarlier.bind(this), onEndReachedThreshold: 1 }}
                     onLongPress={(context, message) => { this.onLongPress(context, message) }}
                     renderActions={this.renderActions.bind(this)}
                     renderFooter={this.renderFooter.bind(this)}
                     alwaysShowSend={true}
-                // renderComposer={(props) => <Composer {...props} textInputProps={this.onImageChange.bind(this)} />}
+                    renderSend={this.renderSend.bind(this)}
+                    text={text}
+                    onInputTextChanged={text => {this.setState({text})}}
+                    // onSend={msg => this.sendChat(msg)}
+                   // renderComposer={(props) => <Composer {...props} textInputProps={this.onImageChange.bind(this)} />}
                 />
             </SafeAreaView>);
     }
