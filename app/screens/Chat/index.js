@@ -107,7 +107,7 @@ class Chat extends Component {
                 this.showToast("You can't chat with this user.");
                 this.room.active = 0;
             })
-        this.setState({ photo: '' });
+        this.setState({ tempPhoto: '' });
     }
 
     readAll() {
@@ -171,7 +171,7 @@ class Chat extends Component {
             } else if (response.customButton) {
                 console.log("here3");
             } else {
-                this.setState({tempPhoto:response.base64});
+                this.setState({tempPhoto:'data:image/jpeg;base64,' + response.base64});
             }
         });
     }
