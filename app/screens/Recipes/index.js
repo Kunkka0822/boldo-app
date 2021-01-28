@@ -238,7 +238,7 @@ class Recipes extends Component {
                         <View style={{ paddingHorizontal: 20, marginTop: 20, flexDirection: 'row' }}>
                             <View style={{flex:1, flexDirection:'row'}} >
                                 <Image style={styles.avatar} source={{ uri: selectedRecipe?.user?.photo }} ></Image>
-                                <Text style={{marginLeft:20, fontSize: 16, marginTop: 10, textAlign: 'center', fontWeight:'bold' }}>{selectedRecipe?.user?.fname + selectedRecipe?.user?.lname?selectedRecipe?.user?.lname:''}</Text>
+                                <Text style={{marginLeft:20, fontSize: 16, marginTop: 10, textAlign: 'center', fontWeight:'bold' }}>{selectedRecipe?.user?.fname + selectedRecipe?.user?.lname != "" ? selectedRecipe?.user?.lname:''}</Text>
                             </View>
                             <TouchableOpacity onPress={() => { this.onClosePress() }} >
                                 <Icon name='times' size={20} color={EStyleSheet.value("$primaryColor")}></Icon>

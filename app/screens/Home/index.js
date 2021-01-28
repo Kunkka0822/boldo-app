@@ -382,7 +382,7 @@ class Home extends Component {
               <View style={{alignItems:'center'}}>
               <Image style={{ width: 80, height: 80, borderRadius: 80, marginTop: 40 }} source={{ uri: selectedUser?.photo }}></Image>
               <View style={{ alignItems: 'center' }}>
-                <Text styles={{ marginTop: 10 }}> {selectedUser?.lname + " " + selectedUser?.fname} </Text>
+                <Text styles={{ marginTop: 10 }}> {selectedUser?.fname + " " + selectedUser?.lname} </Text>
                 <Text> {selectedUser?.typeOfProfessionalNames?.length > 0 && selectedUser?.typeOfProfessionalNames.join(" | ")} </Text>
                 <Text style={{ textAlign: 'center', paddingHorizontal: 20 }}> {selectedUser?.bio} </Text>
                 <Text style={{ textAlign: 'center', paddingHorizontal: 20 }}> {selectedUser?.location} </Text>

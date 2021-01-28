@@ -38,9 +38,9 @@ class Chat extends Component {
             messages: [],
             user: props.auth?.login?.data?.user,
             photo: '',
+            tempPhoto: '',
         };
         this.room = props.route.params.room;
-        this.page = 0;
         this.focusChat = this.props.navigation.addListener('focus', this.onLoadEarlier.bind(this));
         this.focusRead = this.props.navigation.addListener('focus', this.readAll.bind(this));
     }
@@ -60,7 +60,6 @@ class Chat extends Component {
 
     componentWillUnmount() {
         try {
-            this.page = 0;
             EventRegister.removeEventListener(this.listener)
             this.focusChat?.remove();
             this.focusRead?.remove();
@@ -88,8 +87,10 @@ class Chat extends Component {
             return;
         }
         msg[0].user = { _id: this.state.user.id, name: this.state.user.fname, avatar: this.state.user.photo };
+        msg[0].image64 = false;
         if (this.state.photo != '') {
-            msg[0].image = this.state.photo;
+            msg[0].image = this.state.tempPhoto;
+            msg[0].image64 = true;
         }
         const model = {
             room_id: this.room.id,
@@ -126,10 +127,8 @@ class Chat extends Component {
         if (this.loading) {
             return;
         }
-        this.page++;
         const model = {
             room_id: this.room.id,
-            page: this.page
         }
         this.setState({
             loading: true
@@ -173,8 +172,8 @@ class Chat extends Component {
             } else if (response.customButton) {
                 console.log("here3");
             } else {
-                console.log("here4");
-                this.uploadChatImages(response.base64);
+                this.setState({tempPhoto:response.base64});
+                // this.uploadChatImages(response.base64);
             }
         });
     }
@@ -232,28 +231,29 @@ class Chat extends Component {
 
     renderFooter() {
         return (
-            this.state.photo == '' ? <></> :
+            this.state.tempPhoto == '' ? <></> :
                 <View style={{ width: '100%', alignItems: 'center', justifyContent: 'center', backgroundColor: EStyleSheet.value('$textColor') }}>
                     <TouchableOpacity onPress={() => { this.removePhoto() }}>
                         <Icon name="times" size={20} color={EStyleSheet.value('$whiteColor')} />
                     </TouchableOpacity>
-                    <Image style={{ width: '80%', height: 200, resizeMode: 'contain', marginBottom: 10 }} source={{ uri: this.state.photo }}></Image>
+                    <Image style={{ width: '80%', height: 200, resizeMode: 'contain', marginBottom: 10 }} source={{ uri: this.state.tempPhoto }}></Image>
                 </View>
         );
     }
 
 
     removePhoto() {
-        const model = {
-            photo: this.state.photo
-        }
-        apiActions.removePhoto(model)
-            .then(response => {
-            })
-            .catch(err => {
-                console.log("error");
-            })
-        this.setState({ photo: '' });
+        // const model = {
+        //     photo: this.state.photo
+        // }
+        // apiActions.removePhoto(model)
+        //     .then(response => {
+        //     })
+        //     .catch(err => {
+        //         console.log("error");
+        //     })
+        // this.setState({ photo: '' });
+        this.setState({ tempPhoto: '' });
     }
 
     getOneChat(chat_id) {
@@ -271,15 +271,15 @@ class Chat extends Component {
     }
 
     uploadChatImages(image) {
-        const model = {
-            photo: image,
-        }
-        apiActions.uploadChatImages(model)
-            .then(response => {
-                this.setState({ photo: response.data });
-            })
-            .catch(err => {
-            })
+        // const model = {
+        //     photo: image,
+        // }
+        // apiActions.uploadChatImages(model)
+        //     .then(response => {
+        //         this.setState({ photo: response.data });
+        //     })
+        //     .catch(err => {
+        //     })
     }
 
     render() {
