@@ -198,7 +198,8 @@ class Chat extends Component {
 
     renderActions() {
         return (
-            <TouchableOpacity onPress={() => { this.selectImage() }} style={{alignItems:'center', justifyContent:'center', height:'100%'}}>
+            
+            <TouchableOpacity onPress={() => { this.selectImage() }}  style={{ alignSelf:'center'}}>
                 <Icon name="image" style={{ marginLeft: 10 }} size={30} color={EStyleSheet.value("$primaryColor")}></Icon>
             </TouchableOpacity>
         );
@@ -261,7 +262,7 @@ class Chat extends Component {
 
     renderSend(param) {
         return (
-            <TouchableOpacity style={{alignItems:'center', justifyContent:'center', height:'100%', marginRight:5}} onPress={() => { this.sendChat(param) }}>
+            <TouchableOpacity style={{alignSelf:'center'}} onPress={() => { this.sendChat(param) }}>
                <Text style={{color:EStyleSheet.value('$primaryColor'), fontWeight:'bold', fontSize:15}}>Send</Text>
             </TouchableOpacity>
         );
