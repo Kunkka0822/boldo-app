@@ -33,6 +33,7 @@ class SignIn extends Component {
       errMsg: Utils.translate("messages.login-failed-msg"),
       email: BaseConfig.debugging ? "bognarvojislav791@gmail.com" : '',
       password: BaseConfig.debugging ? "123456" : '',
+      type:'login',
       agree: false,
       success: {
         email: true,

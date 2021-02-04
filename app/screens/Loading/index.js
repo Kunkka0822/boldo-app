@@ -117,7 +117,8 @@ class Loading extends Component {
     if (this.mounted) {
       const model = {
         email: store.getState().auth?.login?.data.user.email,
-        password: store.getState().auth?.login?.data.user.password
+        password: store.getState().auth?.login?.data.user.password,
+        type: "confirm"
       }
       apiActions.login(model)
         .then(response => {
